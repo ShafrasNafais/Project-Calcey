@@ -1,0 +1,2009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCS LIMS — Wireframes v1.0</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --ink:#1a1a2e;--mid:#4a4a6a;--dim:#8888aa;--wire:#c8c8dc;--bg:#f4f4f8;
+    --white:#ffffff;--canvas:#fafafa;
+    --blue:#2355a0;--blue-lt:#e8eef8;--blue-md:#5577cc;
+    --green:#1a6644;--green-lt:#e8f5ee;
+    --amber:#8b5200;--amber-lt:#fff3e0;
+    --red:#8b1a1a;--red-lt:#fdecea;
+    --teal:#1a5f6f;--teal-lt:#e0f4f8;
+    --tag:#e2e2ec;
+  }
+  body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--ink);display:flex;height:100vh;overflow:hidden;font-size:13px}
+
+  /* SIDEBAR */
+  #sidebar{width:260px;min-width:260px;background:var(--ink);display:flex;flex-direction:column;overflow:hidden}
+  #sidebar-header{padding:20px 16px 12px;border-bottom:1px solid rgba(255,255,255,.12)}
+  #sidebar-header .logo{font-size:11px;font-weight:600;color:#8899cc;letter-spacing:.1em;text-transform:uppercase}
+  #sidebar-header .title{font-size:14px;font-weight:600;color:#fff;margin-top:4px;line-height:1.3}
+  #sidebar-header .sub{font-size:11px;color:#6677aa;margin-top:2px}
+  #sidebar-nav{flex:1;overflow-y:auto;padding:8px 0}
+  #sidebar-nav::-webkit-scrollbar{width:4px}
+  #sidebar-nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:2px}
+  .nav-group{padding:8px 16px 4px;font-size:10px;font-weight:600;color:#5566aa;letter-spacing:.08em;text-transform:uppercase}
+  .nav-item{padding:8px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .15s;border-left:3px solid transparent}
+  .nav-item:hover{background:rgba(255,255,255,.06)}
+  .nav-item.active{background:rgba(100,130,255,.15);border-left-color:#6699ff}
+  .nav-item .num{font-size:10px;font-weight:700;color:#5566aa;min-width:20px;font-family:'IBM Plex Mono',monospace}
+  .nav-item.active .num{color:#88aaff}
+  .nav-item .label{font-size:12px;color:#aabbdd;line-height:1.3}
+  .nav-item.active .label{color:#ddeeff;font-weight:500}
+  .nav-item .role-badge{margin-left:auto;font-size:9px;padding:2px 5px;border-radius:3px;background:rgba(255,255,255,.08);color:#7788bb;white-space:nowrap}
+
+  /* MAIN */
+  #main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+  #main-header{background:var(--white);border-bottom:1px solid var(--wire);padding:10px 24px;display:flex;align-items:center;gap:16px;min-height:52px}
+  #screen-title{font-size:16px;font-weight:600;color:var(--ink)}
+  #screen-meta{font-size:11px;color:var(--dim);margin-left:auto;display:flex;gap:12px;align-items:center}
+  .meta-tag{background:var(--tag);border-radius:4px;padding:3px 8px;font-size:11px;color:var(--mid);font-weight:500}
+  .meta-tag.blue{background:var(--blue-lt);color:var(--blue)}
+  .meta-tag.green{background:var(--green-lt);color:var(--green)}
+  .meta-tag.amber{background:var(--amber-lt);color:var(--amber)}
+  #canvas{flex:1;overflow-y:auto;padding:24px;background:var(--bg)}
+  #canvas::-webkit-scrollbar{width:6px}
+  #canvas::-webkit-scrollbar-thumb{background:var(--wire);border-radius:3px}
+
+  /* WIREFRAME COMPONENTS */
+  .screen{max-width:1100px;margin:0 auto}
+  .wf-topbar{background:var(--ink);height:44px;border-radius:8px 8px 0 0;display:flex;align-items:center;padding:0 16px;gap:12px}
+  .wf-topbar .logo-wf{font-size:12px;font-weight:700;color:#fff;letter-spacing:.05em}
+  .wf-topbar .nav-links{display:flex;gap:16px;margin-left:24px}
+  .wf-topbar .nav-links span{font-size:11px;color:#99aacc;cursor:pointer;padding:4px 8px;border-radius:4px}
+  .wf-topbar .nav-links span.active-nav{background:rgba(255,255,255,.15);color:#fff}
+  .wf-topbar .user-area{margin-left:auto;display:flex;align-items:center;gap:8px}
+  .wf-topbar .user-pill{background:rgba(255,255,255,.12);border-radius:20px;padding:3px 10px;font-size:11px;color:#ccd}
+  .wf-topbar .notif{width:28px;height:28px;background:rgba(255,255,255,.1);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px}
+
+  .wf-body{background:var(--canvas);border:1px solid var(--wire);border-top:none;border-radius:0 0 8px 8px;padding:20px}
+  .wf-row{display:flex;gap:16px;margin-bottom:16px}
+  .wf-col{flex:1}
+
+  .wf-card{background:var(--white);border:1px solid var(--wire);border-radius:6px;padding:16px;margin-bottom:16px}
+  .wf-card-header{font-size:12px;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--wire);display:flex;align-items:center;gap:8px}
+  .wf-card-header .count-badge{background:var(--blue);color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;font-weight:700}
+
+  .field-row{display:flex;gap:12px;margin-bottom:10px;align-items:flex-end}
+  .field{flex:1}
+  .field label{display:block;font-size:10px;font-weight:600;color:var(--dim);margin-bottom:3px;text-transform:uppercase;letter-spacing:.05em}
+  .field .input-wf{background:#f8f8fc;border:1.5px solid var(--wire);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--mid);font-family:inherit;width:100%}
+  .field .input-wf.filled{background:#fff;border-color:#aabbdd;color:var(--ink)}
+  .field .input-wf.select-wf{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238888aa'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+  .field .input-wf.textarea-wf{height:60px;resize:none}
+  .field .input-wf.radio-group{background:none;border:none;padding:0;display:flex;gap:12px}
+  .radio-opt{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--mid)}
+  .radio-opt .dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--wire);background:#f8f8fc}
+  .radio-opt.sel .dot{border-color:var(--blue);background:var(--blue)}
+  .radio-opt.sel{color:var(--ink);font-weight:500}
+
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:inherit;white-space:nowrap}
+  .btn-primary{background:var(--blue);color:#fff}
+  .btn-secondary{background:var(--white);border:1.5px solid var(--wire);color:var(--mid)}
+  .btn-ghost{background:transparent;color:var(--blue);padding:6px 10px}
+  .btn-danger{background:var(--red-lt);color:var(--red);border:1.5px solid #e8bbbb}
+  .btn-success{background:var(--green-lt);color:var(--green);border:1.5px solid #aaddbb}
+  .btn-amber{background:var(--amber-lt);color:var(--amber);border:1.5px solid #f0cc88}
+  .btn-group{display:flex;gap:8px;align-items:center}
+
+  .wf-table{width:100%;border-collapse:collapse;font-size:12px}
+  .wf-table th{background:#f0f0f8;padding:8px 12px;text-align:left;font-size:10px;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--wire)}
+  .wf-table td{padding:9px 12px;border-bottom:1px solid #f0f0f8;color:var(--ink);vertical-align:middle}
+  .wf-table tr:hover td{background:#f8f8fc}
+  .wf-table td.dim{color:var(--dim);font-size:11px}
+
+  .status-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:12px;font-size:10px;font-weight:600;white-space:nowrap}
+  .s-grey{background:#eee;color:#666}
+  .s-blue{background:var(--blue-lt);color:var(--blue)}
+  .s-amber{background:var(--amber-lt);color:var(--amber)}
+  .s-orange{background:#fff0e0;color:#b06000}
+  .s-green{background:var(--green-lt);color:var(--green)}
+  .s-red{background:var(--red-lt);color:var(--red)}
+  .s-teal{background:var(--teal-lt);color:var(--teal)}
+  .s-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+  .sidebar-wf{width:220px;min-width:220px;background:var(--white);border:1px solid var(--wire);border-radius:6px;padding:12px;height:fit-content}
+  .sidebar-wf h4{font-size:10px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+  .sidebar-link{display:block;padding:6px 8px;border-radius:4px;font-size:12px;color:var(--mid);cursor:pointer;border-left:3px solid transparent}
+  .sidebar-link:hover,.sidebar-link.active{background:var(--blue-lt);color:var(--blue);border-left-color:var(--blue)}
+
+  .step-bar{display:flex;align-items:center;margin-bottom:20px}
+  .step{display:flex;align-items:center;gap:6px;flex:1}
+  .step-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:2px solid var(--wire);color:var(--dim);background:#fff;min-width:24px}
+  .step.done .step-num{background:var(--green);border-color:var(--green);color:#fff}
+  .step.active .step-num{background:var(--blue);border-color:var(--blue);color:#fff}
+  .step-label{font-size:11px;color:var(--dim);font-weight:500}
+  .step.active .step-label{color:var(--blue);font-weight:600}
+  .step.done .step-label{color:var(--green)}
+  .step-line{flex:1;height:2px;background:var(--wire);margin:0 8px}
+  .step.done .step-line{background:var(--green)}
+
+  .data-entry-table{width:100%;border-collapse:collapse;font-size:12px}
+  .data-entry-table th{background:#1a2244;color:#ddeeff;padding:8px 10px;text-align:center;font-size:10px;font-weight:600;letter-spacing:.04em}
+  .data-entry-table th.left{text-align:left}
+  .data-entry-table td{padding:6px 8px;border:1px solid #e8e8f0;text-align:center;vertical-align:middle}
+  .data-entry-table tr:nth-child(even) td{background:#f8f8fc}
+  .data-entry-table .setpoint-col{background:#eef0f8;font-weight:600;color:var(--ink);text-align:left;padding-left:12px}
+  .cell-input{width:64px;background:#fff;border:1.5px solid var(--wire);border-radius:3px;padding:4px 5px;font-size:11px;text-align:center;color:var(--ink);font-family:'IBM Plex Mono',monospace}
+  .cell-input.filled{border-color:#aabbdd;background:#f0f4ff}
+  .cell-ref{background:#e8f4ff;border-radius:3px;padding:4px 6px;font-size:11px;color:#334488;font-family:'IBM Plex Mono',monospace;font-weight:500}
+  .cell-calc{background:#eef8ee;border-radius:3px;padding:4px 6px;font-size:11px;color:var(--green);font-family:'IBM Plex Mono',monospace;font-weight:600}
+  .cell-err{font-family:'IBM Plex Mono',monospace;font-size:11px}
+  .cell-u{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--teal)}
+
+  .alert-bar{padding:10px 14px;border-radius:5px;font-size:12px;display:flex;align-items:flex-start;gap:8px;margin-bottom:12px}
+  .alert-bar.info{background:#e8f0ff;border-left:4px solid var(--blue);color:#2244aa}
+  .alert-bar.warn{background:var(--amber-lt);border-left:4px solid #d0880a;color:var(--amber)}
+  .alert-bar.error{background:var(--red-lt);border-left:4px solid var(--red);color:var(--red)}
+  .alert-bar.success{background:var(--green-lt);border-left:4px solid var(--green);color:var(--green)}
+  .alert-icon{font-size:14px;margin-top:1px}
+
+  .cert-page{background:var(--white);border:1px solid var(--wire);border-radius:4px;padding:24px;font-size:11px;max-width:680px;margin:0 auto}
+  .cert-header-bar{background:#1a2244;padding:8px 16px;border-radius:3px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+  .cert-header-bar .cert-title{font-size:13px;font-weight:700;color:#fff;letter-spacing:.08em}
+  .cert-meta-row{display:flex;justify-content:space-between;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #eee}
+  .cert-meta-row span{font-size:10px;color:#666}
+  .cert-meta-row strong{color:var(--ink)}
+  .cert-section{margin-bottom:14px}
+  .cert-section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--blue);margin-bottom:6px}
+  .cert-table{width:100%;border-collapse:collapse;font-size:10px;margin-top:4px}
+  .cert-table th{background:#eef0f8;padding:5px 8px;text-align:left;font-weight:600;color:var(--mid);border:1px solid var(--wire)}
+  .cert-table td{padding:5px 8px;border:1px solid var(--wire);color:var(--ink)}
+  .cert-sig-row{display:flex;gap:24px;margin-top:14px;padding-top:10px;border-top:1px solid #eee}
+  .cert-sig{flex:1}
+  .cert-sig-line{height:28px;border-bottom:1px solid #bbb;margin-bottom:4px}
+  .cert-sig-label{font-size:9px;color:var(--dim)}
+
+  .uc-table{width:100%;border-collapse:collapse;font-size:11px}
+  .uc-table th{background:#1a2244;color:#ddeeff;padding:6px 10px;text-align:left;font-size:10px}
+  .uc-table td{padding:6px 10px;border-bottom:1px solid #eeeff8;font-family:'IBM Plex Mono',monospace;font-size:11px}
+  .uc-table tr:nth-child(even) td{background:#f8f8fc}
+  .uc-table td.label-col{font-family:'IBM Plex Sans',monospace;font-size:11px;color:var(--mid);font-weight:500}
+  .uc-table td.total-row{background:#e8f0ff;font-weight:700;color:var(--blue)}
+
+  .approval-card{background:#fff;border:1.5px solid var(--wire);border-radius:6px;padding:16px;margin-bottom:12px;display:flex;align-items:center;gap:16px}
+  .approval-card:hover{border-color:#aabbdd;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .approval-card .cert-num{font-size:13px;font-weight:700;color:var(--ink);min-width:180px;font-family:'IBM Plex Mono',monospace}
+  .approval-card .cert-detail{flex:1}
+  .approval-card .cert-detail .client{font-size:11px;color:var(--dim)}
+  .approval-card .cert-detail .instrument{font-size:12px;color:var(--ink);font-weight:500}
+  .approval-card .cert-detail .met{font-size:11px;color:var(--dim);margin-top:2px}
+  .approval-card .cert-actions{display:flex;gap:8px}
+
+  .std-card{background:#fff;border:1px solid var(--wire);border-radius:6px;padding:14px;display:flex;align-items:center;gap:14px;margin-bottom:8px}
+  .std-icon{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;background:#eef0f8;flex-shrink:0}
+  .std-info{flex:1}
+  .std-info .std-id{font-size:11px;font-weight:700;color:var(--blue);font-family:'IBM Plex Mono',monospace}
+  .std-info .std-desc{font-size:12px;color:var(--ink);margin-top:1px}
+  .std-info .std-meta{font-size:11px;color:var(--dim);margin-top:2px}
+  .std-expiry{text-align:right;font-size:11px;white-space:nowrap}
+  .std-expiry .days{font-size:16px;font-weight:700}
+  .std-expiry .days.ok{color:var(--green)}
+  .std-expiry .days.warn{color:var(--amber)}
+  .std-expiry .days.exp{color:var(--red)}
+
+  .annot{position:relative}
+  .annot-box{background:#fff9c4;border:1px solid #e0cc00;border-radius:4px;padding:5px 9px;font-size:10px;color:#664400;margin-top:6px;display:inline-block}
+  .annot-box::before{content:'★ ';font-size:10px}
+
+  .login-wrap{display:flex;align-items:center;justify-content:center;min-height:500px}
+  .login-box{background:#fff;border:1px solid var(--wire);border-radius:10px;padding:36px 32px;width:380px;box-shadow:0 4px 20px rgba(0,0,0,.06)}
+  .login-logo{text-align:center;margin-bottom:24px}
+  .login-logo .co{font-size:11px;font-weight:700;color:var(--blue);letter-spacing:.1em;text-transform:uppercase}
+  .login-logo .sys{font-size:18px;font-weight:700;color:var(--ink);margin-top:4px}
+  .login-logo .sub{font-size:11px;color:var(--dim);margin-top:2px}
+
+  .portal-job{background:#fff;border:1px solid var(--wire);border-radius:6px;overflow:hidden;margin-bottom:12px}
+  .portal-job-header{background:#f8f8fc;padding:12px 16px;display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--wire);cursor:pointer}
+  .portal-job-header:hover{background:#f0f0f8}
+  .portal-job-body{padding:0}
+
+  .section-divider{display:flex;align-items:center;gap:12px;margin:16px 0 12px}
+  .section-divider span{font-size:11px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+  .section-divider::before,.section-divider::after{content:'';flex:1;height:1px;background:var(--wire)}
+
+  .kv-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--wire);border-radius:4px;overflow:hidden;font-size:11px;margin-bottom:12px}
+  .kv-row{display:contents}
+  .kv-key{background:#f4f4f8;padding:6px 10px;color:var(--mid);font-weight:600;border-bottom:1px solid var(--wire)}
+  .kv-val{background:#fff;padding:6px 10px;color:var(--ink);border-bottom:1px solid var(--wire)}
+
+  .hidden{display:none}
+  .tag-chip{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;background:var(--blue-lt);color:var(--blue);margin-right:4px}
+</style>
+
+<style id="proto-styles">
+.wf-hotspot{transition:box-shadow .15s,outline .15s !important;position:relative;cursor:pointer!important}
+.wf-hotspot:hover{box-shadow:0 0 0 2px #2355a0,0 2px 10px rgba(35,85,160,.22)!important;z-index:2}
+body.show-hotspots .wf-hotspot{outline:2px dashed rgba(35,85,160,.55)!important;background:rgba(35,85,160,.04)!important}
+.wf-hotspot[data-nav-label]::after{content:attr(data-nav-label);position:absolute;bottom:calc(100% + 7px);left:50%;transform:translateX(-50%);
+  background:#1a1a2e;color:#fff;font-size:10px;font-weight:600;padding:4px 9px;border-radius:4px;white-space:nowrap;
+  opacity:0;pointer-events:none;transition:opacity .18s;z-index:200;font-family:'IBM Plex Sans',sans-serif;letter-spacing:.03em;
+  border-left:3px solid #6699ff;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.wf-hotspot:hover[data-nav-label]::after{opacity:1}
+tr.wf-hotspot:hover td{background:#eef2fc!important}
+
+#flow-bar{background:#fff;border-bottom:1px solid var(--wire);padding:0 20px;display:flex;align-items:center;
+  gap:0;overflow-x:auto;min-height:38px;flex-shrink:0}
+#flow-bar::-webkit-scrollbar{height:3px}
+#flow-bar::-webkit-scrollbar-thumb{background:var(--wire)}
+.fj{display:flex;align-items:center;gap:0;padding:7px 16px 7px 0;border-right:1px solid var(--wire);margin-right:14px}
+.fj:last-child{border-right:none;margin-right:0}
+.fj-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-right:8px;white-space:nowrap;padding:2px 6px;border-radius:3px;color:#fff}
+.fs{font-size:10px;padding:3px 8px;border-radius:10px;cursor:pointer;white-space:nowrap;
+  transition:all .15s;color:var(--dim);border:1px solid transparent}
+.fs:hover{background:var(--blue-lt);color:var(--blue)}
+.fs.cur{color:#fff!important;font-weight:600;border-color:transparent}
+.fa{color:var(--dim);font-size:10px;margin:0 1px}
+
+#proto-bar{position:fixed;bottom:0;left:260px;right:0;background:#0e1020;border-top:1px solid #2a3060;
+  padding:0 16px;height:34px;display:flex;align-items:center;gap:10px;z-index:500;font-family:'IBM Plex Sans',sans-serif}
+.pb-label{font-size:9px;font-weight:700;color:#3344aa;text-transform:uppercase;letter-spacing:.08em}
+.pb-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#8899bb;
+  padding:3px 9px;border-radius:4px;font-size:10px;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}
+.pb-btn:hover{background:rgba(255,255,255,.16);color:#fff}
+.pb-btn.on{background:rgba(80,120,255,.25);color:#88aaff;border-color:#4466cc}
+.pb-nav{width:24px;height:22px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+  color:#6677aa;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:13px;transition:all .15s;font-family:inherit}
+.pb-nav:hover:not(:disabled){background:rgba(255,255,255,.18);color:#fff}
+.pb-nav:disabled{opacity:.28;cursor:default}
+.pb-sep{width:1px;height:18px;background:rgba(255,255,255,.1);margin:0 4px}
+.pb-hist{font-size:10px;color:#3a4a88}
+.pb-hint{margin-left:auto;font-size:9px;color:#2a3a66;display:flex;align-items:center;gap:4px}
+.pbk{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:3px;
+  padding:1px 5px;font-size:9px;color:#4455aa;font-family:'IBM Plex Mono',monospace}
+
+#nav-toast{position:fixed;bottom:44px;left:50%;transform:translateX(-50%);z-index:900;pointer-events:none;min-width:220px;text-align:center}
+.nt{background:#1a1a2e;color:#ccddf0;padding:7px 16px;border-radius:20px;font-size:11px;font-weight:500;
+  display:inline-flex;align-items:center;gap:7px;box-shadow:0 3px 14px rgba(0,0,0,.3);
+  animation:ntIn .22s ease;border:1px solid #2a3a60}
+@keyframes ntIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+#canvas{padding-bottom:48px!important}
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <div id="sidebar-header">
+    <div class="logo">MCS LIMS</div>
+    <div class="title">UI Wireframes</div>
+    <div class="sub">v1.0 — May 2026</div>
+  </div>
+  <div id="sidebar-nav">
+    <div class="nav-group">Authentication</div>
+    <div class="nav-item active" onclick="show(0)" id="nav-0">
+      <span class="num">01</span><span class="label">Login Page</span><span class="role-badge">All</span>
+    </div>
+    <div class="nav-group">Job Management</div>
+    <div class="nav-item" onclick="show(1)" id="nav-1">
+      <span class="num">02</span><span class="label">All Jobs Dashboard</span><span class="role-badge">Admin</span>
+    </div>
+    <div class="nav-item" onclick="show(2)" id="nav-2">
+      <span class="num">03</span><span class="label">Create New Job</span><span class="role-badge">Admin</span>
+    </div>
+    <div class="nav-item" onclick="show(3)" id="nav-3">
+      <span class="num">04</span><span class="label">Job Detail View</span><span class="role-badge">All Internal</span>
+    </div>
+    <div class="nav-group">Calibration</div>
+    <div class="nav-item" onclick="show(4)" id="nav-4">
+      <span class="num">05</span><span class="label">Metrologist Dashboard</span><span class="role-badge">Metrologist</span>
+    </div>
+    <div class="nav-item" onclick="show(5)" id="nav-5">
+      <span class="num">06</span><span class="label">Worksheet Setup</span><span class="role-badge">Metrologist</span>
+    </div>
+    <div class="nav-item" onclick="show(6)" id="nav-6">
+      <span class="num">07</span><span class="label">Data Entry</span><span class="role-badge">Metrologist</span>
+    </div>
+    <div class="nav-item" onclick="show(7)" id="nav-7">
+      <span class="num">08</span><span class="label">Analysis Results</span><span class="role-badge">Metrologist</span>
+    </div>
+    <div class="nav-group">Certificate & Approval</div>
+    <div class="nav-item" onclick="show(8)" id="nav-8">
+      <span class="num">09</span><span class="label">Certificate Preview</span><span class="role-badge">Metrologist</span>
+    </div>
+    <div class="nav-item" onclick="show(9)" id="nav-9">
+      <span class="num">10</span><span class="label">Authorisation Queue</span><span class="role-badge">Lab Manager</span>
+    </div>
+    <div class="nav-group">Standards & Admin</div>
+    <div class="nav-item" onclick="show(10)" id="nav-10">
+      <span class="num">11</span><span class="label">Standards Database</span><span class="role-badge">Lab Manager</span>
+    </div>
+    <div class="nav-item" onclick="show(11)" id="nav-11">
+      <span class="num">12</span><span class="label">Customer Portal</span><span class="role-badge">Customer</span>
+    </div>
+  
+    <div class="nav-group">Client Management</div>
+    <div class="nav-item" onclick="show(12)" id="nav-12">
+      <span class="num">13</span><span class="label">Create New Client</span><span class="role-badge">Admin</span>
+    </div>
+    <div class="nav-item" onclick="show(13)" id="nav-13">
+      <span class="num">14</span><span class="label">Add Instrument to Job</span><span class="role-badge">Admin</span>
+    </div>
+</div>
+</div>
+
+<div id="main">
+  <div id="flow-bar"></div>
+  <div id="main-header">
+    <div id="screen-title">Screen 01 — Login Page</div>
+    <div id="screen-meta">
+      <span class="meta-tag blue" id="role-tag">All Users</span>
+      <span class="meta-tag" id="story-tag">US-AUTH-01</span>
+      <span style="font-size:11px;color:var(--dim)">Click a screen in the sidebar to navigate</span>
+    </div>
+  </div>
+  <div id="canvas">
+    <div class="screen" id="screen-content"></div>
+  </div>
+</div>
+
+<script>
+const screens=[
+
+// ── 0: LOGIN ──────────────────────────────────────────────────────────────
+{title:"Screen 01 — Login Page",role:"All Users",story:"US-AUTH-01",html:`
+<div class="wf-topbar">
+  <span class="logo-wf">METRO CALIBRATION SERVICES</span>
+  <span style="margin-left:auto;font-size:11px;color:#5566aa">LIMS v1.0</span>
+</div>
+<div class="wf-body" style="min-height:520px">
+  <div class="login-wrap">
+    <div class="login-box">
+      <div class="login-logo">
+        <div style="width:52px;height:52px;background:#1a2244;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px">🔬</div>
+        <div class="co">Metro Calibration Services</div>
+        <div class="sys">LIMS</div>
+        <div class="sub">Laboratory Information Management System</div>
+      </div>
+      <div class="field" style="margin-bottom:12px">
+        <label>Email Address</label>
+        <div class="input-wf filled">k.perera@metrocalibration.lk</div>
+      </div>
+      <div class="field" style="margin-bottom:16px">
+        <label>Password</label>
+        <div class="input-wf">••••••••</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mid);cursor:pointer">
+          <div style="width:14px;height:14px;border:2px solid var(--blue);border-radius:3px;background:var(--blue);display:flex;align-items:center;justify-content:center"><div style="width:7px;height:5px;border-bottom:2px solid #fff;border-left:2px solid #fff;transform:rotate(-45deg) translate(1px,-1px)"></div></div>
+          Keep me signed in
+        </label>
+        <span style="font-size:12px;color:var(--blue);cursor:pointer">Forgot password?</span>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:10px">Sign In</button>
+      <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--wire);text-align:center;font-size:11px;color:var(--dim)">
+        Having trouble? Contact your system administrator
+      </div>
+    </div>
+  </div>
+  <div class="annot-box" style="margin:12px auto;display:block;max-width:500px;text-align:center">After login, system redirects to role-appropriate dashboard. Metrologist → Metrologist Dashboard. Admin/Lab Manager → Jobs Dashboard. Customer → Customer Portal.</div>
+</div>
+`},
+
+// ── 1: ALL JOBS ───────────────────────────────────────────────────────────
+{title:"Screen 02 — All Jobs Dashboard",role:"Admin Manager / Lab Manager / Director",story:"US-JOB-05",html:`
+<div class="wf-topbar">
+  <span class="logo-wf">MCS LIMS</span>
+  <div class="nav-links">
+    <span class="active-nav">Jobs</span><span>Standards</span><span>Reports</span><span>Admin</span>
+  </div>
+  <div class="user-area">
+    <div class="notif">🔔</div>
+    <div class="user-pill">S. Tharinda — Lab Manager</div>
+  </div>
+</div>
+<div class="wf-body">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+    <div>
+      <div style="font-size:18px;font-weight:700;color:var(--ink)">All Calibration Jobs</div>
+      <div style="font-size:12px;color:var(--dim);margin-top:2px">12 active jobs — 3 require your attention</div>
+    </div>
+    <button class="btn btn-primary">+ New Job</button>
+  </div>
+  <div class="wf-row" style="margin-bottom:16px">
+    <div class="field"><label>Filter by Client</label><div class="input-wf select-wf filled">All Clients</div></div>
+    <div class="field"><label>Status</label><div class="input-wf select-wf filled">All Statuses</div></div>
+    <div class="field"><label>Date Range</label><div class="input-wf filled">2026-01-01 – Today</div></div>
+    <div class="field"><label>Metrologist</label><div class="input-wf select-wf">All</div></div>
+    <div style="padding-bottom:1px"><button class="btn btn-secondary" style="margin-top:18px">Apply</button></div>
+  </div>
+  <div style="display:flex;gap:12px;margin-bottom:16px">
+    <div class="wf-card" style="flex:1;margin:0;padding:12px 16px">
+      <div style="font-size:22px;font-weight:700;color:var(--ink)">12</div>
+      <div style="font-size:11px;color:var(--dim)">Active Jobs</div>
+    </div>
+    <div class="wf-card" style="flex:1;margin:0;padding:12px 16px">
+      <div style="font-size:22px;font-weight:700;color:var(--amber)">7</div>
+      <div style="font-size:11px;color:var(--dim)">Pending Authorisation</div>
+    </div>
+    <div class="wf-card" style="flex:1;margin:0;padding:12px 16px">
+      <div style="font-size:22px;font-weight:700;color:var(--red)">3</div>
+      <div style="font-size:11px;color:var(--dim)">Rejected — Needs Rework</div>
+    </div>
+    <div class="wf-card" style="flex:1;margin:0;padding:12px 16px">
+      <div style="font-size:22px;font-weight:700;color:var(--green)">24</div>
+      <div style="font-size:11px;color:var(--dim)">Authorised This Month</div>
+    </div>
+  </div>
+  <table class="wf-table">
+    <thead><tr>
+      <th>Job #</th><th>Client</th><th>PO Ref</th><th>Date Received</th><th>Items</th><th>Progress</th><th>Status</th><th>Actions</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td><strong style="font-family:'IBM Plex Mono',monospace">1178</strong></td>
+        <td>ABC Manufacturing (Pvt) Ltd</td>
+        <td class="dim">PO-2026-0341</td>
+        <td class="dim">2026-03-01</td>
+        <td><span class="tag-chip">50 items</span></td>
+        <td>
+          <div style="display:flex;align-items:center;gap:6px">
+            <div style="flex:1;height:6px;background:#e8e8f0;border-radius:3px"><div style="width:68%;height:100%;background:var(--blue);border-radius:3px"></div></div>
+            <span style="font-size:10px;color:var(--dim)">34/50</span>
+          </div>
+        </td>
+        <td><span class="status-pill s-amber"><span class="s-dot"></span>In Progress</span></td>
+        <td><button class="btn btn-ghost" style="font-size:11px">View →</button></td>
+      </tr>
+      <tr>
+        <td><strong style="font-family:'IBM Plex Mono',monospace">1179</strong></td>
+        <td>Lanka Hospitals PLC</td>
+        <td class="dim">LH/CAL/2026/02</td>
+        <td class="dim">2026-03-08</td>
+        <td><span class="tag-chip">8 items</span></td>
+        <td>
+          <div style="display:flex;align-items:center;gap:6px">
+            <div style="flex:1;height:6px;background:#e8e8f0;border-radius:3px"><div style="width:100%;height:100%;background:var(--green);border-radius:3px"></div></div>
+            <span style="font-size:10px;color:var(--dim)">8/8</span>
+          </div>
+        </td>
+        <td><span class="status-pill s-orange"><span class="s-dot"></span>Pending Auth.</span></td>
+        <td><button class="btn btn-ghost" style="font-size:11px">View →</button></td>
+      </tr>
+      <tr>
+        <td><strong style="font-family:'IBM Plex Mono',monospace">1180</strong></td>
+        <td>Ceylon Biscuits Ltd</td>
+        <td class="dim">CBL-MAINT-2026-03</td>
+        <td class="dim">2026-03-10</td>
+        <td><span class="tag-chip">22 items</span></td>
+        <td>
+          <div style="display:flex;align-items:center;gap:6px">
+            <div style="flex:1;height:6px;background:#e8e8f0;border-radius:3px"><div style="width:20%;height:100%;background:var(--blue);border-radius:3px"></div></div>
+            <span style="font-size:10px;color:var(--dim)">4/22</span>
+          </div>
+        </td>
+        <td><span class="status-pill s-blue"><span class="s-dot"></span>In Progress</span></td>
+        <td><button class="btn btn-ghost" style="font-size:11px">View →</button></td>
+      </tr>
+      <tr>
+        <td><strong style="font-family:'IBM Plex Mono',monospace">1176</strong></td>
+        <td>Hemas Manufacturing</td>
+        <td class="dim">HM/QC/2026/01</td>
+        <td class="dim">2026-02-15</td>
+        <td><span class="tag-chip">16 items</span></td>
+        <td>
+          <div style="display:flex;align-items:center;gap:6px">
+            <div style="flex:1;height:6px;background:#e8e8f0;border-radius:3px"><div style="width:100%;height:100%;background:var(--green);border-radius:3px"></div></div>
+            <span style="font-size:10px;color:var(--dim)">16/16</span>
+          </div>
+        </td>
+        <td><span class="status-pill s-teal"><span class="s-dot"></span>Released</span></td>
+        <td><button class="btn btn-ghost" style="font-size:11px">View →</button></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="annot-box" style="margin-top:12px">Clicking "View →" opens the Job Detail screen (Screen 04) for that job. The "Progress" bar fills as items reach Authorised status.</div>
+</div>
+`},
+
+// ── 2: CREATE JOB ─────────────────────────────────────────────────────────
+{title:"Screen 03 — Create New Job",role:"Admin Manager",story:"US-JOB-02",html:`
+<div class="wf-topbar">
+  <span class="logo-wf">MCS LIMS</span>
+  <div class="nav-links"><span class="active-nav">Jobs</span><span>Standards</span><span>Admin</span></div>
+  <div class="user-area"><div class="user-pill">Admin Manager</div></div>
+</div>
+<div class="wf-body">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px">
+    <span style="font-size:13px;color:var(--dim);cursor:pointer">Jobs</span>
+    <span style="color:var(--dim)">›</span>
+    <span style="font-size:13px;font-weight:600;color:var(--ink)">New Job</span>
+  </div>
+  <div class="wf-row">
+    <div style="flex:2">
+      <div class="wf-card">
+        <div class="wf-card-header">Job Details</div>
+        <div class="field-row">
+          <div class="field">
+            <label>Client <span style="color:red">*</span></label>
+            <div class="input-wf select-wf filled">ABC Manufacturing (Pvt) Ltd</div>
+          </div>
+          <div class="field">
+            <label>PO Reference <span style="color:red">*</span></label>
+            <div class="input-wf filled">PO-2026-0341</div>
+          </div>
+          <div class="field">
+            <label>Date Received <span style="color:red">*</span></label>
+            <div class="input-wf filled">2026-03-01</div>
+          </div>
+        </div>
+        <div class="annot-box">Job Number (e.g. 1178) and Certificate Numbers are auto-assigned on save. They cannot be manually entered.</div>
+      </div>
+      <div class="wf-card">
+        <div class="wf-card-header">Instrument List <span class="count-badge">4 items</span>
+          <button class="btn btn-secondary" style="margin-left:auto;font-size:11px">+ Add Instrument</button>
+        </div>
+        <table class="wf-table">
+          <thead><tr>
+            <th>#</th><th>Certificate No</th><th>Description</th><th>Working Range</th><th>Instrument ID</th><th>Location</th><th>Frequency</th><th></th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td class="dim">1</td>
+              <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--blue)">MCS-2026-1178-001</td>
+              <td>Temperature Gauge (Analog)</td><td class="dim">50–300 °C</td>
+              <td style="font-family:'IBM Plex Mono',monospace;font-size:11px">UA/TG-01</td>
+              <td class="dim">Boiler – Flue Gas</td><td class="dim">1 year</td>
+              <td><button class="btn btn-ghost" style="color:var(--red);font-size:11px">✕</button></td>
+            </tr>
+            <tr>
+              <td class="dim">2</td>
+              <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--blue)">MCS-2026-1178-002</td>
+              <td>Digital Thermometer</td><td class="dim">0–150 °C</td>
+              <td style="font-family:'IBM Plex Mono',monospace;font-size:11px">UA/DT-03</td>
+              <td class="dim">Lab Room 2</td><td class="dim">1 year</td>
+              <td><button class="btn btn-ghost" style="color:var(--red);font-size:11px">✕</button></td>
+            </tr>
+            <tr>
+              <td class="dim">3</td>
+              <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--blue)">MCS-2026-1178-003</td>
+              <td>Thermocouple Type K</td><td class="dim">–40–600 °C</td>
+              <td style="font-family:'IBM Plex Mono',monospace;font-size:11px">UA/TC-07</td>
+              <td class="dim">Furnace #2</td><td class="dim">6 months</td>
+              <td><button class="btn btn-ghost" style="color:var(--red);font-size:11px">✕</button></td>
+            </tr>
+            <tr style="background:#f8f8fc">
+              <td class="dim">4</td>
+              <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--blue)">MCS-2026-1178-004</td>
+              <td><div class="input-wf" style="padding:4px 8px">Temperature Transmitter</div></td>
+              <td><div class="input-wf" style="padding:4px 8px">40–90 °C</div></td>
+              <td><div class="input-wf" style="padding:4px 8px;font-family:monospace">UA/TT-02</div></td>
+              <td><div class="input-wf" style="padding:4px 8px">Production Line</div></td>
+              <td><div class="input-wf select-wf" style="padding:4px 8px">1 year</div></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px">
+        <button class="btn btn-secondary">Cancel</button>
+        <button class="btn btn-secondary">Save Draft</button>
+        <button class="btn btn-primary">Save & Generate Job Card</button>
+      </div>
+    </div>
+    <div style="flex:0 0 220px">
+      <div class="sidebar-wf">
+        <h4>Job Card Status</h4>
+        <div style="margin-bottom:12px">
+          <div class="status-pill s-grey" style="margin-bottom:8px"><span class="s-dot"></span>Draft — Unsaved</div>
+          <div style="font-size:11px;color:var(--dim);line-height:1.5">Save the job to generate a Job Card PDF for client approval.</div>
+        </div>
+        <div style="border-top:1px solid var(--wire);padding-top:12px;margin-top:4px">
+          <h4>Checklist</h4>
+          <div style="font-size:11px;color:var(--dim);line-height:2">
+            ✅ Client selected<br>✅ PO Reference entered<br>✅ Date Received set<br>❌ At least 1 instrument
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`},
+
+// ── 3: JOB DETAIL ─────────────────────────────────────────────────────────
+{title:"Screen 04 — Job Detail View (Calibration Dashboard)",role:"All Internal Roles",story:"US-JOB-04 / US-JOB-05",html:`
+<div class="wf-topbar">
+  <span class="logo-wf">MCS LIMS</span>
+  <div class="nav-links"><span class="active-nav">Jobs</span><span>Standards</span></div>
+  <div class="user-area"><div class="user-pill">S. Tharinda — Lab Manager</div></div>
+</div>
+<div class="wf-body">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px">
+    <div>
+      <div style="font-size:12px;color:var(--dim);margin-bottom:4px">Jobs › Job #1178</div>
+      <div style="font-size:20px;font-weight:700">ABC Manufacturing (Pvt) Ltd</div>
+      <div style="font-size:13px;color:var(--dim);margin-top:2px">Job #1178 — PO: PO-2026-0341 — Received: 2026-03-01</div>
+    </div>
+    <div style="text-align:right">
+      <span class="status-pill s-blue" style="font-size:12px;padding:5px 12px"><span class="s-dot"></span>In Progress</span>
+      <div style="font-size:11px;color:var(--dim);margin-top:6px">Client approval recorded: 2026-03-05</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:12px;margin-bottom:16px">
+    <div class="wf-card" style="flex:1;margin:0;padding:10px 14px"><div style="font-size:20px;font-weight:700">50</div><div style="font-size:11px;color:var(--dim)">Total Items</div></div>
+    <div class="wf-card" style="flex:1;margin:0;padding:10px 14px;border-color:#aaddbb"><div style="font-size:20px;font-weight:700;color:var(--green)">34</div><div style="font-size:11px;color:var(--dim)">Authorised</div></div>
+    <div class="wf-card" style="flex:1;margin:0;padding:10px 14px;border-color:#f0cc88"><div style="font-size:20px;font-weight:700;color:var(--amber)">11</div><div style="font-size:11px;color:var(--dim)">In Progress</div></div>
+    <div class="wf-card" style="flex:1;margin:0;padding:10px 14px;border-color:#e8bbbb"><div style="font-size:20px;font-weight:700;color:var(--red)">2</div><div style="font-size:11px;color:var(--dim)">Rejected</div></div>
+    <div class="wf-card" style="flex:1;margin:0;padding:10px 14px"><div style="font-size:20px;font-weight:700;color:var(--dim)">3</div><div style="font-size:11px;color:var(--dim)">Not Started</div></div>
+  </div>
+  <table class="wf-table">
+    <thead><tr>
+      <th>#</th><th>Certificate No</th><th>Instrument</th><th>Instrument ID</th><th>Scheduled</th><th>Metrologist</th><th>Status</th><th>Actions</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td class="dim">1</td>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:11px">MCS-2026-1178-001</td>
+        <td>Temperature Gauge (Analog)</td>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim)">UA/TG-01</td>
+        <td class="dim">2026-03-07</td>
+        <td class="dim">K.J.R. Perera</td>
+        <td><span class="status-pill s-green"><span class="s-dot"></span>Authorised</span></td>
+        <td><button class="btn btn-ghost" style="font-size:11px">View</button></td>
+      </tr>
+      <tr style="background:#fff0f0">
+        <td class="dim">2</td>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:11px">MCS-2026-1178-002</td>
+        <td>Digital Thermometer</td>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim)">UA/DT-03</td>
+        <td class="dim">2026-03-07</td>
+        <td class="dim">K.J.R. Perera</td>
+        <td><span class="status-pill s-red"><span class="s-dot"></span>Rejected</span></td>
+        <td><button class="btn btn-ghost" style="font-size:11px;color:var(--red)">Review →</button></td>
+      </tr>
+      <tr>
+        <td class="dim">3</td>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:11px">MCS-2026-1178-003</td>
+        <td>Thermocouple Type K</td>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim)">UA/TC-07</td>
+        <td class="dim">2026-03-09</td>
+        <td class="dim">Y.H. Athuraliya</td>
+        <td><span class="status-pill s-orange"><span class="s-dot"></span>Pending Auth.</span></td>
+        <td><button class="btn btn-success" style="font-size:11px">Authorise →</button></td>
+      </tr>
+      <tr>
+        <td class="dim">4</td>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:11px">MCS-2026-1178-004</td>
+        <td>Temperature Transmitter</td>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim)">UA/TT-02</td>
+        <td class="dim">2026-03-12</td>
+        <td class="dim">— Unassigned —</td>
+        <td><span class="status-pill s-grey"><span class="s-dot"></span>Not Assigned</span></td>
+        <td><button class="btn btn-ghost" style="font-size:11px">Assign</button></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="annot-box" style="margin-top:12px">Rejected items show the rejection comment inline when expanded. The "Authorise →" button on Pending Auth. items is only visible to Lab Manager role. Admin Manager sees a "Release" button when all items are Authorised.</div>
+</div>
+`},
+
+// ── 4: METROLOGIST DASHBOARD ───────────────────────────────────────────────
+{title:"Screen 05 — Metrologist Dashboard",role:"Metrologist",story:"US-CAL-01",html:`
+<div class="wf-topbar">
+  <span class="logo-wf">MCS LIMS</span>
+  <div class="nav-links"><span class="active-nav">My Work</span><span>All Jobs</span></div>
+  <div class="user-area"><div class="notif">🔔<span style="position:relative;top:-6px;right:-2px;background:red;color:white;border-radius:6px;font-size:8px;padding:0 3px">3</span></div><div class="user-pill">K.J.R. Perera — Metrologist</div></div>
+</div>
+<div class="wf-body">
+  <div style="margin-bottom:16px">
+    <div style="font-size:18px;font-weight:700">Good morning, K.J.R. Perera</div>
+    <div style="font-size:12px;color:var(--dim);margin-top:2px">Wednesday, 12 March 2026 — You have 3 items to complete today</div>
+  </div>
+  <div style="display:flex;gap:16px">
+    <div style="flex:1">
+      <div class="section-divider"><span>Assigned to Me</span></div>
+      <div class="wf-card" style="border-left:4px solid var(--red)">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div style="font-size:11px;color:var(--dim)">Job #1178 · MCS-2026-1178-002 · ABC Manufacturing</div>
+            <div style="font-size:14px;font-weight:600;margin:4px 0">Digital Thermometer — UA/DT-03</div>
+            <div style="font-size:11px;color:var(--red);font-weight:600">⚠ Rejected — Lab Manager comment: "Check reference reading at 100°C, appears to be outlier"</div>
+          </div>
+          <span class="status-pill s-red" style="margin-left:16px"><span class="s-dot"></span>Rejected</span>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button class="btn btn-danger">Review Rejection</button>
+          <button class="btn btn-secondary">View Audit Trail</button>
+        </div>
+      </div>
+      <div class="wf-card" style="border-left:4px solid var(--amber)">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div style="font-size:11px;color:var(--dim)">Job #1178 · MCS-2026-1178-005 · ABC Manufacturing</div>
+            <div style="font-size:14px;font-weight:600;margin:4px 0">Thermocouple Type N — UA/TC-09</div>
+            <div style="font-size:11px;color:var(--amber)">Scheduled today — Data entry in progress</div>
+          </div>
+          <span class="status-pill s-amber"><span class="s-dot"></span>In Progress</span>
+        </div>
+        <div style="margin-top:12px"><button class="btn btn-primary">Continue →</button></div>
+      </div>
+      <div class="wf-card" style="border-left:4px solid var(--wire)">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div style="font-size:11px;color:var(--dim)">Job #1180 · MCS-2026-1180-003 · Ceylon Biscuits</div>
+            <div style="font-size:14px;font-weight:600;margin:4px 0">Bimetallic Thermometer — CBL/TG-12</div>
+            <div style="font-size:11px;color:var(--dim)">Scheduled: 2026-03-12 — Lab calibration</div>
+          </div>
+          <span class="status-pill s-grey"><span class="s-dot"></span>Not Started</span>
+        </div>
+        <div style="margin-top:12px"><button class="btn btn-secondary">Start Calibration</button></div>
+      </div>
+    </div>
+    <div style="flex:1">
+      <div class="section-divider"><span>Available to Assign</span></div>
+      <table class="wf-table">
+        <thead><tr><th>Job #</th><th>Instrument</th><th>Scheduled</th><th></th></tr></thead>
+        <tbody>
+          <tr><td class="dim">1179</td><td>RTD PT100 — LH/PT-04</td><td class="dim">2026-03-13</td><td><button class="btn btn-ghost" style="font-size:11px">Assign to Me</button></td></tr>
+          <tr><td class="dim">1180</td><td>Thermocouple K — CBL/TC-03</td><td class="dim">2026-03-14</td><td><button class="btn btn-ghost" style="font-size:11px">Assign to Me</button></td></tr>
+          <tr><td class="dim">1180</td><td>Digital Thermometer — CBL/DT-01</td><td class="dim">2026-03-14</td><td><button class="btn btn-ghost" style="font-size:11px">Assign to Me</button></td></tr>
+        </tbody>
+      </table>
+      <div class="annot-box" style="margin-top:8px">Assigning locks this certificate to the metrologist for e-signature purposes.</div>
+    </div>
+  </div>
+</div>
+`},
+
+// ── 5: WORKSHEET SETUP ─────────────────────────────────────────────────────
+{title:"Screen 06 — Worksheet Setup (Step 1 of 3)",role:"Metrologist",story:"US-CAL-02 / US-CAL-03 / US-CAL-04",html:`
+<div class="wf-topbar">
+  <span class="logo-wf">MCS LIMS</span>
+  <div class="nav-links"><span class="active-nav">My Work</span></div>
+  <div class="user-area"><div class="user-pill">K.J.R. Perera</div></div>
+</div>
+<div class="wf-body">
+  <div style="font-size:12px;color:var(--dim);margin-bottom:12px">Jobs › #1178 · ABC Manufacturing › MCS-2026-1178-001 · Temperature Gauge</div>
+  <div class="step-bar">
+    <div class="step active"><div class="step-num">1</div><div class="step-label">Setup & Standards</div></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-num">2</div><div class="step-label">Data Entry</div></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-num">3</div><div class="step-label">Results & Certificate</div></div>
+  </div>
+  <div class="wf-row">
+    <div style="flex:2">
+      <div class="wf-card">
+        <div class="wf-card-header">Test Method & Worksheet</div>
+        <div class="field-row">
+          <div class="field">
+            <label>Test Method <span style="color:red">*</span></label>
+            <div class="input-wf select-wf filled">MCS-TM-02 : Calibration of Digital/Analog Temperature Gauges</div>
+          </div>
+          <div class="field" style="max-width:240px">
+            <label>Worksheet Version <span style="color:red">*</span></label>
+            <div class="input-wf select-wf filled">MCS-CAL-WS-02AN v1.0 (Current)</div>
+          </div>
+        </div>
+      </div>
+      <div class="wf-card">
+        <div class="wf-card-header">Unit Under Calibration (UUC) Details</div>
+        <div class="field-row">
+          <div class="field">
+            <label>Description <span style="color:red">*</span></label>
+            <div class="input-wf filled">Analog Thermometer</div>
+          </div>
+          <div class="field">
+            <label>Scale Type <span style="color:red">*</span></label>
+            <div class="input-wf radio-group">
+              <div class="radio-opt sel">🔘 Analog</div>
+              <div class="radio-opt">⚪ Digital</div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Temperature Unit <span style="color:red">*</span></label>
+            <div class="input-wf radio-group">
+              <div class="radio-opt sel">🔘 °C</div>
+              <div class="radio-opt">⚪ °F</div>
+            </div>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Manufacturer & Model</label><div class="input-wf filled">MC (Bimetallic)</div></div>
+          <div class="field"><label>Serial No</label><div class="input-wf filled">1612***6129</div></div>
+          <div class="field"><label>Instrument ID</label><div class="input-wf filled" style="font-family:monospace">UA/TG-01</div></div>
+          <div class="field"><label>Condition <span style="color:red">*</span></label><div class="input-wf select-wf filled">GOOD</div></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Instrument Location</label><div class="input-wf filled">Utility Area – Boiler – Flue Gas Temperature</div></div>
+          <div class="field" style="max-width:180px"><label>Instrument Scale (Analog)</label><div class="input-wf filled">10 °C</div></div>
+          <div class="field" style="max-width:180px"><label>Eye Estimation</label><div class="input-wf select-wf filled">1/5 Divisions</div></div>
+        </div>
+      </div>
+      <div class="wf-card">
+        <div class="wf-card-header">Reference Standards Used</div>
+        <div style="display:flex;gap:12px;margin-bottom:10px">
+          <div style="flex:1">
+            <label style="font-size:10px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px">Reference Thermometer <span style="color:red">*</span></label>
+            <div class="std-card" style="border-color:var(--blue);background:var(--blue-lt)">
+              <div class="std-icon">🌡️</div>
+              <div class="std-info">
+                <div class="std-id">MCS-LAB-RTD-003</div>
+                <div class="std-desc">Working Standard PT100 Sensor (Class B)</div>
+                <div class="std-meta">Range: 30–600 °C · LCS/CR/25/11284</div>
+              </div>
+              <div class="std-expiry"><div class="days ok">47</div><div style="font-size:9px;color:var(--dim)">days left</div></div>
+            </div>
+          </div>
+          <div style="flex:1">
+            <label style="font-size:10px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px">Dry-Well Temperature Source <span style="color:red">*</span></label>
+            <div class="std-card" style="border-color:var(--blue);background:var(--blue-lt)">
+              <div class="std-icon">🔥</div>
+              <div class="std-info">
+                <div class="std-id">MCS-LAB-DB-003</div>
+                <div class="std-desc">ISOTECH FAST-CAL Dry-Well 38119/3</div>
+                <div class="std-meta">Range: 50–500 °C · LCS/CR/23/10572</div>
+              </div>
+              <div class="std-expiry"><div class="days warn">19</div><div style="font-size:9px;color:var(--amber)">days left</div></div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-secondary" style="font-size:11px">Change Selected Standards</button>
+        <div class="annot-box" style="margin-top:8px">System validates range coverage against the calibration set points (50–300 °C). DB-003 covers this range ✓. Amber expiry warning shown for DB-003 but it is not yet expired so calibration can proceed.</div>
+      </div>
+      <div class="wf-card">
+        <div class="wf-card-header">Ambient Conditions & Dates</div>
+        <div class="field-row">
+          <div class="field"><label>Date of Calibration <span style="color:red">*</span></label><div class="input-wf filled">2026-03-07</div></div>
+          <div class="field"><label>Calibration Location <span style="color:red">*</span></label><div class="input-wf filled">Wefor Area, ABC Manufacturing Ltd</div></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Initial Temperature (°C)</label><div class="input-wf filled">27.9</div></div>
+          <div class="field"><label>Initial Humidity (%RH)</label><div class="input-wf filled">60.4</div></div>
+          <div class="field"><label>Final Temperature (°C)</label><div class="input-wf filled">28.5</div></div>
+          <div class="field"><label>Final Humidity (%RH)</label><div class="input-wf filled">61.0</div></div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px">
+        <button class="btn btn-secondary">Save Draft</button>
+        <button class="btn btn-primary">Continue to Data Entry →</button>
+      </div>
+    </div>
+    <div style="flex:0 0 220px">
+      <div class="sidebar-wf">
+        <h4>Certificate</h4>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--blue);margin-bottom:8px">MCS-2026-1178-001</div>
+        <div style="font-size:11px;color:var(--dim);margin-bottom:12px">Temperature Gauge (Analog)<br>UA/TG-01 · Job #1178</div>
+        <div class="status-pill s-amber" style="margin-bottom:12px"><span class="s-dot"></span>In Progress</div>
+        <div style="border-top:1px solid var(--wire);padding-top:10px;margin-top:4px">
+          <h4>Required Set Points</h4>
+          <div style="font-size:11px;color:var(--dim);line-height:2">50 °C · 100 °C · 200 °C · 300 °C</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`},
+
+// ── 6: DATA ENTRY ─────────────────────────────────────────────────────────
+{title:"Screen 07 — Measurement Data Entry (Step 2 of 3)",role:"Metrologist",story:"US-CAL-05",html:`
+<div class="wf-topbar">
+  <span class="logo-wf">MCS LIMS</span>
+  <div class="nav-links"><span class="active-nav">My Work</span></div>
+  <div class="user-area"><div class="user-pill">K.J.R. Perera</div></div>
+</div>
+<div class="wf-body">
+  <div style="font-size:12px;color:var(--dim);margin-bottom:12px">Jobs › #1178 › MCS-2026-1178-001 · Temperature Gauge (Analog)</div>
+  <div class="step-bar">
+    <div class="step done"><div class="step-num">✓</div><div class="step-label">Setup & Standards</div><div class="step-line"></div></div>
+    <div class="step active"><div class="step-num">2</div><div class="step-label">Data Entry</div><div class="step-line"></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-label">Results & Certificate</div></div>
+  </div>
+  <div class="alert-bar info"><span class="alert-icon">ℹ</span><span>Entering data for: Reference Thermometer MCS-LAB-RTD-003 + Dry-Well MCS-LAB-DB-003. Set points: 50, 100, 200, 300 °C. Analog scale — eye estimation 1/5 divisions.</span></div>
+  <div class="wf-card">
+    <div class="wf-card-header">Performance After Adjustment (Main Results)
+      <label style="margin-left:auto;display:flex;align-items:center;gap:6px;font-size:11px;font-weight:400;color:var(--mid);cursor:pointer;text-transform:none;letter-spacing:0">
+        <div style="width:14px;height:14px;border:2px solid var(--wire);border-radius:3px;background:#fff"></div>
+        Also record Before Adjustment data
+      </label>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="data-entry-table">
+        <thead>
+          <tr>
+            <th class="left" rowspan="2" style="min-width:80px">Set Point (°C)</th>
+            <th colspan="3">Reference Readings (°C)</th>
+            <th colspan="3">UUC Readings (°C)</th>
+            <th rowspan="2">Ref Mean</th>
+            <th rowspan="2">UUC Mean</th>
+            <th rowspan="2">UUC Res.</th>
+          </tr>
+          <tr>
+            <th>i</th><th>ii</th><th>iii</th>
+            <th>i</th><th>ii</th><th>iii</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="setpoint-col">50 °C</td>
+            <td><div class="cell-input filled">50.07</div></td>
+            <td><div class="cell-input filled">50.09</div></td>
+            <td><div class="cell-input filled">50.11</div></td>
+            <td><div class="cell-input filled">30</div></td>
+            <td><div class="cell-input filled">30</div></td>
+            <td><div class="cell-input filled">30</div></td>
+            <td><div class="cell-ref">50.09</div></td>
+            <td><div class="cell-ref">30</div></td>
+            <td><div class="cell-input" style="width:48px">2</div></td>
+          </tr>
+          <tr>
+            <td class="setpoint-col">100 °C</td>
+            <td><div class="cell-input filled">99.52</div></td>
+            <td><div class="cell-input filled">99.55</div></td>
+            <td><div class="cell-input filled">99.57</div></td>
+            <td><div class="cell-input filled">80</div></td>
+            <td><div class="cell-input filled">80</div></td>
+            <td><div class="cell-input filled">80</div></td>
+            <td><div class="cell-ref">99.55</div></td>
+            <td><div class="cell-ref">80</div></td>
+            <td><div class="cell-input" style="width:48px">2</div></td>
+          </tr>
+          <tr>
+            <td class="setpoint-col">200 °C</td>
+            <td><div class="cell-input filled">200.77</div></td>
+            <td><div class="cell-input filled">200.79</div></td>
+            <td><div class="cell-input filled">200.81</div></td>
+            <td><div class="cell-input filled">178</div></td>
+            <td><div class="cell-input filled">178</div></td>
+            <td><div class="cell-input filled">178</div></td>
+            <td><div class="cell-ref">200.79</div></td>
+            <td><div class="cell-ref">178</div></td>
+            <td><div class="cell-input" style="width:48px">2</div></td>
+          </tr>
+          <tr>
+            <td class="setpoint-col">300 °C</td>
+            <td><div class="cell-input filled">301.47</div></td>
+            <td><div class="cell-input filled">301.49</div></td>
+            <td><div class="cell-input filled">301.52</div></td>
+            <td><div class="cell-input filled">276</div></td>
+            <td><div class="cell-input filled">276</div></td>
+            <td><div class="cell-input filled">276</div></td>
+            <td><div class="cell-ref">301.49</div></td>
+            <td><div class="cell-ref">276</div></td>
+            <td><div class="cell-input" style="width:48px">2</div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center">
+      <div style="font-size:11px;color:var(--dim)">Adjustment: <strong>No adjustment performed</strong></div>
+      <div class="btn-group">
+        <button class="btn btn-secondary">← Back to Setup</button>
+        <button class="btn btn-secondary">Save Draft</button>
+        <button class="btn btn-primary">Calculate & View Results →</button>
+      </div>
+    </div>
+  </div>
+  <div class="annot-box">"Calculate & View Results" triggers the server-side calculation engine. All 11 uncertainty components are computed automatically using the stored polynomial coefficients for MCS-LAB-RTD-003. Results appear on Screen 08.</div>
+</div>
+`},
+
+// ── 7: ANALYSIS RESULTS ───────────────────────────────────────────────────
+{title:"Screen 08 — Analysis Results (Step 3 of 3)",role:"Metrologist",story:"US-CALC-01 / US-CALC-03 / US-CALC-04",html:`
+<div class="wf-topbar">
+  <span class="logo-wf">MCS LIMS</span>
+  <div class="nav-links"><span class="active-nav">My Work</span></div>
+  <div class="user-area"><div class="user-pill">K.J.R. Perera</div></div>
+</div>
+<div class="wf-body">
+  <div style="font-size:12px;color:var(--dim);margin-bottom:12px">Jobs › #1178 › MCS-2026-1178-001</div>
+  <div class="step-bar">
+    <div class="step done"><div class="step-num">✓</div><div class="step-label">Setup & Standards</div><div class="step-line"></div></div>
+    <div class="step done"><div class="step-num">✓</div><div class="step-label">Data Entry</div><div class="step-line"></div></div>
+    <div class="step active"><div class="step-num">3</div><div class="step-label">Results & Certificate</div></div>
+  </div>
+  <div class="alert-bar success"><span class="alert-icon">✓</span><span>Calculation complete. All results computed using RTD-003 coefficients (LCS/CR/25/11284). Review results below before generating the certificate.</span></div>
+  <div class="wf-row">
+    <div style="flex:2">
+      <div class="wf-card">
+        <div class="wf-card-header">Calibration Results Summary</div>
+        <table class="wf-table">
+          <thead><tr>
+            <th>Set Point (°C)</th>
+            <th>Corrected Ref. Value* (°C)</th>
+            <th>UUC Indication (°C)</th>
+            <th>Error of Indication (°C)</th>
+            <th>Calculated U (°C)</th>
+            <th>CMC (°C)</th>
+            <th>Reported U ±(°C)</th>
+            <th>Basis</th>
+          </tr></thead>
+          <tbody>
+            <tr><td>50</td><td class="cell-ref" style="padding:8px 12px">50.11</td><td>30</td><td style="color:var(--red);font-weight:600;font-family:'IBM Plex Mono',monospace">–20.11</td><td class="cell-u" style="padding:8px 12px">2.7</td><td style="font-family:'IBM Plex Mono',monospace;color:var(--dim)">2.9</td><td class="cell-calc" style="padding:8px 12px">2.9</td><td><span class="tag-chip" style="background:#fff0e0;color:#a04000">CMC</span></td></tr>
+            <tr><td>100</td><td class="cell-ref" style="padding:8px 12px">99.55</td><td>80</td><td style="color:var(--red);font-weight:600;font-family:'IBM Plex Mono',monospace">–19.55</td><td class="cell-u" style="padding:8px 12px">2.7</td><td style="font-family:'IBM Plex Mono',monospace;color:var(--dim)">2.9</td><td class="cell-calc" style="padding:8px 12px">2.9</td><td><span class="tag-chip" style="background:#fff0e0;color:#a04000">CMC</span></td></tr>
+            <tr><td>200</td><td class="cell-ref" style="padding:8px 12px">200.80</td><td>178</td><td style="color:var(--red);font-weight:600;font-family:'IBM Plex Mono',monospace">–22.80</td><td class="cell-u" style="padding:8px 12px">2.7</td><td style="font-family:'IBM Plex Mono',monospace;color:var(--dim)">2.9</td><td class="cell-calc" style="padding:8px 12px">2.9</td><td><span class="tag-chip" style="background:#fff0e0;color:#a04000">CMC</span></td></tr>
+            <tr><td>300</td><td class="cell-ref" style="padding:8px 12px">301.50</td><td>276</td><td style="color:var(--red);font-weight:600;font-family:'IBM Plex Mono',monospace">–25.50</td><td class="cell-u" style="padding:8px 12px">2.7</td><td style="font-family:'IBM Plex Mono',monospace;color:var(--dim)">2.9</td><td class="cell-calc" style="padding:8px 12px">2.9</td><td><span class="tag-chip" style="background:#fff0e0;color:#a04000">CMC</span></td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:10px;color:var(--dim);margin-top:6px">* Reference values corrected using polynomial curve coefficients from MCS-LAB-RTD-003 calibration certificate LCS/CR/25/11284. Expanded uncertainty based on k=2 (95% confidence).</div>
+      </div>
+      <div class="wf-card">
+        <div class="wf-card-header">Uncertainty Budget (Set Point: 100 °C) — Expand All</div>
+        <table class="uc-table">
+          <thead><tr><th>Component</th><th>Symbol</th><th>Variability</th><th>Type</th><th>Divisor</th><th>u_i (°C)</th><th>c_i</th><th>Contribution</th></tr></thead>
+          <tbody>
+            <tr><td class="label-col">Ref. calibration uncertainty</td><td>δuSTD,CAL</td><td>0.0249</td><td>B</td><td>2</td><td>0.01247</td><td>1</td><td>0.01247</td></tr>
+            <tr><td class="label-col">Ref. drift</td><td>δuSTD,DRIFT</td><td>1.400</td><td>B</td><td>√3</td><td>0.80829</td><td>1</td><td>0.80829</td></tr>
+            <tr><td class="label-col">Ref. resolution</td><td>δuSTD,RES</td><td>0.001</td><td>B</td><td>2√3</td><td>0.000289</td><td>1</td><td>0.000289</td></tr>
+            <tr><td class="label-col">Ref. repeatability</td><td>δuSTD,REP</td><td>0.025</td><td>A</td><td>√6</td><td>0.010206</td><td>1</td><td>0.010206</td></tr>
+            <tr><td class="label-col">UUC repeatability</td><td>δuUUC,REP</td><td>0.000</td><td>A</td><td>√6</td><td>0.000</td><td>1</td><td>0.000</td></tr>
+            <tr><td class="label-col">UUC resolution (eye estim.)</td><td>δuUUC,RES</td><td>2.0</td><td>B</td><td>2√3</td><td>0.5774</td><td>1</td><td>0.5774</td></tr>
+            <tr><td class="label-col">Dry-well axial uniformity</td><td>δuWELL,Axi</td><td>0.012</td><td>B</td><td>2√3</td><td>0.003464</td><td>1</td><td>0.003464</td></tr>
+            <tr><td class="label-col">Dry-well radial uniformity</td><td>δuWELL,Rad</td><td>0.103</td><td>B</td><td>2√3</td><td>0.02975</td><td>1</td><td>0.02975</td></tr>
+            <tr><td class="label-col">Dry-well stability</td><td>δuWELL,Stab</td><td>0.053</td><td>B</td><td>2√3</td><td>0.01531</td><td>1</td><td>0.01531</td></tr>
+            <tr><td class="label-col">Correction curve residual</td><td>δuResidual,Cor</td><td>0.0219</td><td>B</td><td>√3</td><td>0.01265</td><td>1</td><td>0.01265</td></tr>
+            <tr><td class="label-col">Uncertainty curve residual</td><td>δuResidual,Un</td><td>0.000096</td><td>B</td><td>√3</td><td>0.0000554</td><td>1</td><td>0.0000554</td></tr>
+            <tr><td class="label-col total-row" colspan="7">Combined Uncertainty u_c (k=1)</td><td class="total-row">0.813 °C</td></tr>
+            <tr><td class="label-col total-row" colspan="7">Expanded Uncertainty U (k=2, ~95%)</td><td class="total-row">1.63 °C → CMC used: 2.9 °C</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px">
+        <button class="btn btn-secondary">← Edit Data</button>
+        <button class="btn btn-primary">Preview Certificate →</button>
+      </div>
+    </div>
+    <div style="flex:0 0 220px">
+      <div class="sidebar-wf">
+        <h4>Calculation Status</h4>
+        <div style="font-size:11px;line-height:2;color:var(--dim)">
+          ✅ Reference correction applied<br>
+          ✅ Errors calculated (4 points)<br>
+          ✅ Uncertainty budget complete<br>
+          ✅ CMC comparison done<br>
+          ⚠ CMC limit applied at all 4 points
+        </div>
+        <div style="border-top:1px solid var(--wire);padding-top:10px;margin-top:8px">
+          <h4>Calculated vs CMC</h4>
+          <div style="font-size:11px;color:var(--dim)">Calculated U: 1.63 °C<br>CMC Value: 2.9 °C<br><strong style="color:var(--amber)">CMC reported (higher)</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`},
+
+// ── 8: CERTIFICATE PREVIEW ────────────────────────────────────────────────
+{title:"Screen 09 — Certificate Preview",role:"Metrologist",story:"US-CERT-01 / US-APPR-01",html:`
+<div class="wf-topbar">
+  <span class="logo-wf">MCS LIMS</span>
+  <div class="user-area"><div class="user-pill">K.J.R. Perera</div></div>
+</div>
+<div class="wf-body">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+    <div>
+      <div style="font-size:16px;font-weight:700">Certificate Preview — MCS-2026-1178-001</div>
+      <div style="font-size:11px;color:var(--dim)">Review carefully before signing. This is what the client will receive.</div>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-secondary">← Edit Data</button>
+      <button class="btn btn-success">✍ Sign & Submit for Authorisation</button>
+    </div>
+  </div>
+  <div style="display:flex;gap:16px">
+    <div style="flex:2">
+      <div style="font-size:11px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Page 1 of 2</div>
+      <div class="cert-page">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:2px solid #eee">
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--ink)">Metro Calibration Services (Pvt) Ltd</div>
+            <div style="font-size:9px;color:var(--dim);font-style:italic">"Striving for Perfection"</div>
+          </div>
+          <div style="width:40px;height:40px;background:#1a2244;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:8px;font-weight:700;text-align:center">METRO<br>CAL</div>
+        </div>
+        <div class="cert-header-bar"><span class="cert-title">CERTIFICATE OF CALIBRATION</span></div>
+        <div class="cert-meta-row">
+          <span><strong>Certificate Ref:</strong> MCS-2026-1178-001</span>
+          <span><strong>Date of Issue:</strong> 2026-03-10</span>
+          <span>Page 01 of 02</span>
+        </div>
+        <div class="cert-section">
+          <div class="cert-section-title">Customer Details</div>
+          <div style="font-size:11px;color:var(--ink)">ABC Manufacturing (Pvt) Ltd<br>No. 123, Industrial Zone, Katunayake<br>Sri Lanka.</div>
+        </div>
+        <div class="cert-section">
+          <div class="cert-section-title">Unit Under Calibration</div>
+          <table class="cert-table">
+            <tr><td style="background:#f4f4f8;font-weight:600;width:40%">Description</td><td colspan="3"><strong>Analog Thermometer</strong></td></tr>
+            <tr><td style="background:#f4f4f8"></td><td style="background:#f4f4f8;font-weight:600">Indicator</td><td></td><td style="background:#f4f4f8;font-weight:600">Sensor</td></tr>
+            <tr><td style="background:#f4f4f8;font-weight:600">Manufacturer & Model</td><td colspan="3">MC</td></tr>
+            <tr><td style="background:#f4f4f8;font-weight:600">Serial No</td><td colspan="3">1612***6129</td></tr>
+            <tr><td style="background:#f4f4f8;font-weight:600">Instrument Identification</td><td colspan="3"><strong>UA/TG-01</strong></td></tr>
+            <tr><td style="background:#f4f4f8;font-weight:600">Instrument Location</td><td colspan="3">Utility Area – Boiler – Flue Gas Temperature</td></tr>
+            <tr><td style="background:#f4f4f8;font-weight:600">Sensor/Probe Type</td><td colspan="3">Bimetallic</td></tr>
+            <tr><td style="background:#f4f4f8;font-weight:600">Condition</td><td colspan="3"><strong>GOOD</strong></td></tr>
+            <tr><td style="background:#f4f4f8;font-weight:600">Date Received</td><td colspan="3">2026-03-01</td></tr>
+          </table>
+        </div>
+        <div class="cert-section">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:10px">
+            <div><strong>Test Method:</strong> MCS-TM-02 (Direct Comparison)</div>
+            <div><strong>Date of Calibration:</strong> 2026-03-07</div>
+            <div><strong>Next Calibration Due:</strong> 2027-03-06</div>
+            <div><strong>Range Calibrated:</strong> 50 °C to 300 °C</div>
+            <div colspan="2"><strong>Calibration Location:</strong> Wefor Area, ABC Manufacturing Ltd</div>
+          </div>
+        </div>
+        <div class="cert-section">
+          <div class="cert-section-title">Measurement Traceability</div>
+          <table class="cert-table">
+            <thead><tr><th>Working Standard</th><th>Certificate</th><th>Calibration Authority</th><th>Cal. Due</th></tr></thead>
+            <tbody>
+              <tr><td>Working Standard PT100 (MCS-LAB-RTD-003)</td><td>LCS/CR/25/11284</td><td>Lanka Calibration Services Pvt Ltd</td><td>2026-07-20</td></tr>
+              <tr><td>ISOTECH FAST-CAL Dry-Well 38119/3</td><td>LCS/CR/23/10572</td><td>Lanka Calibration Services Pvt Ltd</td><td>2026-06-10</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="cert-section">
+          <div class="cert-section-title">Ambient Condition</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;font-size:10px;gap:4px">
+            <div>Temperature (Initial): <strong>27.9 °C</strong></div>
+            <div>Temperature (Final): <strong>28.5 °C</strong></div>
+            <div>Relative Humidity (Initial): <strong>60.4 % RH</strong></div>
+            <div>Relative Humidity (Final): <strong>61.0 % RH</strong></div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:11px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin:16px 0 8px">Page 2 of 2</div>
+      <div class="cert-page">
+        <div class="cert-header-bar"><span class="cert-title">CERTIFICATE OF CALIBRATION</span><span style="font-size:10px;color:#aab">MCS-2026-1178-001 · Page 02 of 02</span></div>
+        <div class="cert-section">
+          <div class="cert-section-title">Results of Calibration</div>
+          <div style="font-size:10px;margin-bottom:6px">Instrument Scale: Analog | Resolution: 10 °C | Eye Estimation: 1/5 Divisions</div>
+          <table class="cert-table">
+            <thead><tr><th>Set Point (°C)</th><th>Reference Value* (°C)</th><th>UUC Indication (°C)</th><th>Error of Indication (°C)</th><th>Expanded Uncertainty ±U (°C)</th></tr></thead>
+            <tbody>
+              <tr><td>50</td><td>50.11</td><td>30</td><td>–20.11</td><td>2.9</td></tr>
+              <tr><td>100</td><td>99.55</td><td>80</td><td>–19.55</td><td>2.9</td></tr>
+              <tr><td>200</td><td>200.80</td><td>178</td><td>–22.80</td><td>2.9</td></tr>
+              <tr><td>300</td><td>301.50</td><td>276</td><td>–25.50</td><td>2.9</td></tr>
+            </tbody>
+          </table>
+          <div style="font-size:9px;color:var(--dim);margin-top:4px">*Readings corrected based on latest calibration. UUC Indication expressed to the readability of UUC with Eye Estimation.</div>
+        </div>
+        <div style="font-size:9px;color:var(--mid);line-height:1.8;margin-bottom:12px">
+          <strong>Notes:</strong><br>
+          1. In the evaluation of measurement uncertainty, contributions from the following sources were considered: 1.1 Reference Thermometer (Calibration, Drift, Resolution, Scatter) 1.2 UUC (Scatter, Resolution) 1.3 Temperature Source (Axial, Radial, Stability) 1.4 Regression Curves<br>
+          2. Expanded uncertainty based on k=2, ~95% confidence. Evaluated per SLAB requirements.<br>
+          3. Certificate shall not be reproduced except in full without written approval from Metro Calibration Services.<br>
+          4. No statement of conformity is included unless explicitly requested by customer.
+        </div>
+        <div class="cert-sig-row">
+          <div class="cert-sig">
+            <div class="cert-sig-line"></div>
+            <div class="cert-sig-label">K.J.R. Perera — Instrument Technician<br><em>Awaiting e-signature</em></div>
+          </div>
+          <div class="cert-sig">
+            <div class="cert-sig-line"></div>
+            <div class="cert-sig-label">Authorised Signatory (Lab Manager)<br><em>Awaiting authorisation</em></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="flex:0 0 200px">
+      <div class="sidebar-wf" style="position:sticky;top:0">
+        <h4>Sign & Submit</h4>
+        <div style="font-size:11px;color:var(--dim);margin-bottom:12px;line-height:1.6">By signing, you confirm this data is accurate. Your name, timestamp, and a content hash will be recorded.</div>
+        <button class="btn btn-success" style="width:100%;justify-content:center">✍ Sign & Submit</button>
+        <div style="margin-top:8px;font-size:10px;color:var(--dim)">Only K.J.R. Perera can sign this certificate.</div>
+      </div>
+    </div>
+  </div>
+</div>
+`},
+
+// ── 9: AUTHORISATION QUEUE ─────────────────────────────────────────────────
+{title:"Screen 10 — Authorisation Queue",role:"Lab Manager",story:"US-APPR-02",html:`
+<div class="wf-topbar">
+  <span class="logo-wf">MCS LIMS</span>
+  <div class="nav-links"><span class="active-nav">Authorisations</span><span>Jobs</span><span>Standards</span></div>
+  <div class="user-area"><div class="notif">🔔<span style="position:relative;top:-6px;right:-2px;background:red;color:white;border-radius:6px;font-size:8px;padding:0 3px">7</span></div><div class="user-pill">S. Tharinda — Lab Manager</div></div>
+</div>
+<div class="wf-body">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+    <div>
+      <div style="font-size:18px;font-weight:700">Authorisation Queue</div>
+      <div style="font-size:12px;color:var(--dim)">7 certificates pending your review and authorisation</div>
+    </div>
+    <div class="field" style="max-width:200px"><div class="input-wf select-wf">Filter by Client: All</div></div>
+  </div>
+  <div class="approval-card" style="border-left:4px solid var(--amber)">
+    <div class="cert-num">MCS-2026-1178-003</div>
+    <div class="cert-detail">
+      <div class="client">ABC Manufacturing (Pvt) Ltd — Job #1178</div>
+      <div class="instrument">Thermocouple Type K — UA/TC-07</div>
+      <div class="met">Calibrated by: Y.H. Athuraliya · Submitted: 2026-03-09 14:22</div>
+    </div>
+    <span class="status-pill s-orange"><span class="s-dot"></span>Pending Auth.</span>
+    <div class="cert-actions">
+      <button class="btn btn-ghost" style="font-size:11px">View Certificate</button>
+      <button class="btn btn-success" style="font-size:11px">✓ Authorise</button>
+      <button class="btn btn-danger" style="font-size:11px">✕ Reject</button>
+    </div>
+  </div>
+  <div class="approval-card" style="border-left:4px solid var(--amber)">
+    <div class="cert-num">MCS-2026-1179-001</div>
+    <div class="cert-detail">
+      <div class="client">Lanka Hospitals PLC — Job #1179</div>
+      <div class="instrument">Digital Thermometer — LH/DT-01</div>
+      <div class="met">Calibrated by: K.J.R. Perera · Submitted: 2026-03-10 09:05</div>
+    </div>
+    <span class="status-pill s-orange"><span class="s-dot"></span>Pending Auth.</span>
+    <div class="cert-actions">
+      <button class="btn btn-ghost" style="font-size:11px">View Certificate</button>
+      <button class="btn btn-success" style="font-size:11px">✓ Authorise</button>
+      <button class="btn btn-danger" style="font-size:11px">✕ Reject</button>
+    </div>
+  </div>
+  <div class="approval-card" style="border-left:4px solid var(--amber)">
+    <div class="cert-num">MCS-2026-1179-002</div>
+    <div class="cert-detail">
+      <div class="client">Lanka Hospitals PLC — Job #1179</div>
+      <div class="instrument">RTD PT100 — LH/PT-04</div>
+      <div class="met">Calibrated by: A.D.T.S. Akmeemana · Submitted: 2026-03-10 11:30</div>
+    </div>
+    <span class="status-pill s-orange"><span class="s-dot"></span>Pending Auth.</span>
+    <div class="cert-actions">
+      <button class="btn btn-ghost" style="font-size:11px">View Certificate</button>
+      <button class="btn btn-success" style="font-size:11px">✓ Authorise</button>
+      <button class="btn btn-danger" style="font-size:11px">✕ Reject</button>
+    </div>
+  </div>
+  <div style="margin-top:16px;padding:12px 16px;background:#fff;border:1px solid var(--wire);border-radius:6px">
+    <div style="font-size:12px;font-weight:600;color:var(--mid);margin-bottom:8px">REJECTION PANEL — MCS-2026-1178-002 (active)</div>
+    <div style="font-size:12px;color:var(--dim);margin-bottom:8px">Write your rejection reason. This will be sent to the metrologist as a notification.</div>
+    <div class="input-wf textarea-wf" style="background:#fff;border-color:#aabbdd;color:var(--ink);height:48px">Check reference reading at 100°C — the mean (99.55) appears inconsistent with the dry-well set point of 100. Please verify the data sheet and re-enter.</div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+      <button class="btn btn-secondary">Cancel</button>
+      <button class="btn btn-danger">Send Rejection</button>
+    </div>
+  </div>
+  <div class="annot-box" style="margin-top:12px">Clicking "Authorise" opens a confirmation dialog: "By clicking Confirm, you are applying your authorisation signature [Name] to [Certificate No]." The certificate is then locked. Rejection sends a notification to the metrologist and returns the item to In Progress status.</div>
+</div>
+`},
+
+// ── 10: STANDARDS DATABASE ─────────────────────────────────────────────────
+{title:"Screen 11 — Reference Standards Database",role:"Lab Manager",story:"US-STD-01 / US-STD-02",html:`
+<div class="wf-topbar">
+  <span class="logo-wf">MCS LIMS</span>
+  <div class="nav-links"><span>Jobs</span><span class="active-nav">Standards</span><span>Admin</span></div>
+  <div class="user-area"><div class="user-pill">S. Tharinda — Lab Manager</div></div>
+</div>
+<div class="wf-body">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+    <div>
+      <div style="font-size:18px;font-weight:700">Reference Standards Database</div>
+      <div style="font-size:12px;color:var(--dim)">All working and reference standards — Click any standard to view full detail and calibration history</div>
+    </div>
+    <button class="btn btn-primary">+ Add Standard</button>
+  </div>
+  <div class="alert-bar warn"><span class="alert-icon">⚠</span><span><strong>1 standard expiring soon:</strong> MCS-LAB-DB-003 (ISOTECH FAST-CAL) expires in 19 days (2026-06-10). Schedule recalibration now.</span></div>
+  <div class="section-divider"><span>Thermometers / Sensors</span></div>
+  <div class="std-card">
+    <div class="std-icon">🌡️</div>
+    <div class="std-info">
+      <div class="std-id">MCS-LAB-RTD-001</div>
+      <div class="std-desc">Working Standard PRT Sensor — HNR 845-202 (Class B)</div>
+      <div class="std-meta">Range: –8 to 110 °C · Certificate: LCS/CR/25/10846 · Lanka Calibration Services</div>
+    </div>
+    <div class="std-expiry"><div class="days ok">52</div><div style="font-size:9px;color:var(--dim)">days left</div></div>
+    <button class="btn btn-ghost" style="font-size:11px">View Detail</button>
+  </div>
+  <div class="std-card">
+    <div class="std-icon">🌡️</div>
+    <div class="std-info">
+      <div class="std-id">MCS-LAB-RTD-003</div>
+      <div class="std-desc">Working Standard PRT Sensor — HNR 845-204 (Class B)</div>
+      <div class="std-meta">Range: 30 to 600 °C · Certificate: LCS/CR/25/11284 · Lanka Calibration Services</div>
+    </div>
+    <div class="std-expiry"><div class="days ok">47</div><div style="font-size:9px;color:var(--dim)">days left</div></div>
+    <button class="btn btn-ghost" style="font-size:11px">View Detail</button>
+  </div>
+  <div class="std-card" style="border-color:#e8bbbb;background:#fff8f8">
+    <div class="std-icon" style="background:#fdecea">🌡️</div>
+    <div class="std-info">
+      <div class="std-id" style="color:var(--red)">MCS-LAB-RTD-005</div>
+      <div class="std-desc">Working Standard Thermometer — ISOTECH 935-14-61</div>
+      <div class="std-meta">Range: –40 to 250 °C · Certificate: TH/25/02/12 · MUSSD</div>
+    </div>
+    <div class="std-expiry"><div class="days exp">–36</div><div style="font-size:9px;color:var(--red)">EXPIRED</div></div>
+    <button class="btn btn-danger" style="font-size:11px">Record New Cal.</button>
+  </div>
+  <div class="section-divider"><span>Dry-Wells / Temperature Sources</span></div>
+  <div class="std-card">
+    <div class="std-icon">🔥</div>
+    <div class="std-info">
+      <div class="std-id">MCS-LAB-DB-001</div>
+      <div class="std-desc">ISOTECH EUROPA Dry-Well 38119/1 — Calisto 4520</div>
+      <div class="std-meta">Range: –20 to 140 °C · Certificate: LCS/CR/23/10364 · Lanka Calibration Services</div>
+    </div>
+    <div class="std-expiry"><div class="days ok">118</div><div style="font-size:9px;color:var(--dim)">days left</div></div>
+    <button class="btn btn-ghost" style="font-size:11px">View Detail</button>
+  </div>
+  <div class="std-card" style="border-color:#f0cc88;background:#fffbf0">
+    <div class="std-icon" style="background:var(--amber-lt)">🔥</div>
+    <div class="std-info">
+      <div class="std-id" style="color:var(--amber)">MCS-LAB-DB-003</div>
+      <div class="std-desc">ISOTECH FAST-CAL Dry-Well 38119/3 — Fast-Cal 907</div>
+      <div class="std-meta">Range: 50 to 500 °C · Certificate: LCS/CR/23/10572 · Lanka Calibration Services</div>
+    </div>
+    <div class="std-expiry"><div class="days warn">19</div><div style="font-size:9px;color:var(--amber)">days — WARN</div></div>
+    <button class="btn btn-amber" style="font-size:11px">Record New Cal.</button>
+  </div>
+  <div class="annot-box" style="margin-top:12px">"Record New Cal." opens a form to enter the new certificate number, calibrating authority, new validity dates, and all 7 polynomial correction and uncertainty coefficients. Previous coefficients are archived automatically.</div>
+</div>
+`},
+
+// ── 11: CUSTOMER PORTAL ─────────────────────────────────────────────────────
+{title:"Screen 12 — Customer Portal",role:"Customer",story:"US-ADM-02",html:`
+<div class="wf-topbar" style="background:#1a3a5c">
+  <span class="logo-wf">MCS — Client Portal</span>
+  <div class="nav-links">
+    <span class="active-nav">My Certificates</span>
+    <span>Instrument History</span>
+  </div>
+  <div class="user-area"><div class="user-pill">ABC Manufacturing — Quality Manager</div></div>
+</div>
+<div class="wf-body" style="background:#f0f4f8">
+  <div style="max-width:900px;margin:0 auto">
+    <div style="margin-bottom:20px">
+      <div style="font-size:18px;font-weight:700;color:var(--ink)">My Calibration Certificates</div>
+      <div style="font-size:12px;color:var(--dim);margin-top:2px">ABC Manufacturing (Pvt) Ltd — All calibration jobs and certificates</div>
+    </div>
+    <div style="display:flex;gap:12px;margin-bottom:16px">
+      <div class="field"><label>Search by Instrument ID</label><div class="input-wf">e.g. UA/TG-01</div></div>
+      <div class="field"><label>Year</label><div class="input-wf select-wf filled">2026</div></div>
+      <div style="padding-bottom:1px"><button class="btn btn-secondary" style="margin-top:18px">Search</button></div>
+    </div>
+    <div class="portal-job">
+      <div class="portal-job-header">
+        <div>
+          <div style="font-size:13px;font-weight:700">Job #1176 — PO: HM/QC/2026/01</div>
+          <div style="font-size:11px;color:var(--dim);margin-top:2px">Calibration date: February 2026 · 16 instruments</div>
+        </div>
+        <span class="status-pill s-teal" style="margin-left:auto"><span class="s-dot"></span>All Released</span>
+        <span style="font-size:18px;color:var(--dim);margin-left:12px">▾</span>
+      </div>
+      <table class="wf-table" style="border-top:none">
+        <thead><tr><th>Certificate No</th><th>Instrument</th><th>Instrument ID</th><th>Cal. Date</th><th>Next Due</th><th>Download</th></tr></thead>
+        <tbody>
+          <tr>
+            <td style="font-family:'IBM Plex Mono',monospace;font-size:11px">MCS-2026-1176-001</td>
+            <td>Temperature Gauge (Analog)</td>
+            <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim)">UA/TG-01</td>
+            <td class="dim">2026-02-20</td>
+            <td class="dim">2027-02-19</td>
+            <td><button class="btn btn-success" style="font-size:11px">⬇ Download PDF</button></td>
+          </tr>
+          <tr>
+            <td style="font-family:'IBM Plex Mono',monospace;font-size:11px">MCS-2026-1176-002</td>
+            <td>Digital Thermometer</td>
+            <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim)">UA/DT-03</td>
+            <td class="dim">2026-02-20</td>
+            <td class="dim">2027-02-19</td>
+            <td><button class="btn btn-success" style="font-size:11px">⬇ Download PDF</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="portal-job">
+      <div class="portal-job-header">
+        <div>
+          <div style="font-size:13px;font-weight:700">Job #1178 — PO: PO-2026-0341</div>
+          <div style="font-size:11px;color:var(--dim);margin-top:2px">Calibration date: March 2026 · 50 instruments</div>
+        </div>
+        <span class="status-pill s-blue" style="margin-left:auto"><span class="s-dot"></span>In Progress — 34/50 complete</span>
+        <span style="font-size:18px;color:var(--dim);margin-left:12px">▸</span>
+      </div>
+    </div>
+    <div class="annot-box" style="margin-top:12px">Customers can only download certificates when status is "Released". "In Progress" jobs show status but no download links. The "Instrument History" tab lets customers search by Instrument ID to see all calibrations for that instrument across all historical jobs.</div>
+  </div>
+</div>
+`},
+
+
+// ── 12: CREATE NEW CLIENT ─────────────────────────────────────────────────
+{title:"Screen 13 — Create New Client",role:"Admin Manager",story:"US-JOB-01",html:`
+<div class="wf-topbar">
+  <span class="logo-wf">MCS LIMS</span>
+  <div class="nav-links">
+    <span class="active-nav">Clients</span><span>Jobs</span><span>Standards</span><span>Admin</span>
+  </div>
+  <div class="user-area">
+    <div class="notif">🔔</div>
+    <div class="user-pill">Admin Manager</div>
+  </div>
+</div>
+<div class="wf-body">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px">
+    <span style="font-size:13px;color:var(--blue);cursor:pointer;text-decoration:underline dotted">Jobs</span>
+    <span style="color:var(--dim)">›</span>
+    <span style="font-size:13px;color:var(--blue);cursor:pointer;text-decoration:underline dotted">Clients</span>
+    <span style="color:var(--dim)">›</span>
+    <span style="font-size:13px;font-weight:600;color:var(--ink)">New Client</span>
+  </div>
+
+  <div class="wf-row">
+    <!-- MAIN FORM -->
+    <div style="flex:2">
+
+      <!-- Company Information -->
+      <div class="wf-card">
+        <div class="wf-card-header">🏢 Company Information</div>
+        <div class="field-row">
+          <div class="field" style="flex:2">
+            <label>Company / Organisation Name <span style="color:red">*</span></label>
+            <div class="input-wf filled">ABC Manufacturing (Pvt) Ltd</div>
+          </div>
+          <div class="field">
+            <label>Tax / VAT Number</label>
+            <div class="input-wf">VAT-0000-0000</div>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field" style="flex:2">
+            <label>Full Address <span style="color:red">*</span></label>
+            <div class="input-wf textarea-wf filled" style="height:64px">No. 47, Baseline Road,
+Kolonnawa, Western Province,
+Sri Lanka</div>
+          </div>
+        </div>
+        <div class="annot-box">Company name and address appear on all certificates issued to this client. Use the full legal name.</div>
+      </div>
+
+      <!-- Primary Contact -->
+      <div class="wf-card">
+        <div class="wf-card-header">👤 Primary Contact</div>
+        <div class="field-row">
+          <div class="field">
+            <label>Contact Name <span style="color:red">*</span></label>
+            <div class="input-wf filled">T. Jayawardena</div>
+          </div>
+          <div class="field">
+            <label>Job Title</label>
+            <div class="input-wf filled">Quality Manager</div>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Email Address <span style="color:red">*</span></label>
+            <div class="input-wf filled">quality@abcmfg.lk</div>
+          </div>
+          <div class="field">
+            <label>Phone Number <span style="color:red">*</span></label>
+            <div class="input-wf filled">+94 11 234 5678</div>
+          </div>
+        </div>
+        <div class="annot-box" style="color:var(--amber);background:var(--amber-lt);border-color:#e8cc88">⚠ Email must be unique — it is used as the login ID for the client's Customer Portal account if one is created.</div>
+      </div>
+
+      <!-- Secondary Contact (optional) -->
+      <div class="wf-card">
+        <div class="wf-card-header" style="justify-content:space-between">
+          <span>👤 Secondary Contact <span style="font-weight:400;font-size:10px;color:var(--dim)">(Optional)</span></span>
+          <button class="btn btn-ghost" style="font-size:11px;padding:2px 8px">+ Add Secondary Contact</button>
+        </div>
+        <div style="text-align:center;padding:12px 0;color:var(--dim);font-size:12px">No secondary contact added. Click above to add one.</div>
+      </div>
+
+      <!-- Internal Notes -->
+      <div class="wf-card">
+        <div class="wf-card-header">📝 Internal Notes</div>
+        <div class="field-row">
+          <div class="field">
+            <label>Notes (Internal — not shown on certificates or portal)</label>
+            <div class="input-wf textarea-wf" style="height:72px">Long-term client since 2019. Usually requires expedited turnaround. Primary instruments: boiler temperature gauges.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Portal Access -->
+      <div class="wf-card">
+        <div class="wf-card-header">🔐 Customer Portal Access</div>
+        <div class="field-row" style="align-items:center">
+          <div class="field">
+            <label>Create Customer Portal Account?</label>
+            <div class="input-wf radio-group" style="margin-top:4px">
+              <div class="radio-opt sel"><div class="dot"></div> Yes — create login account using primary contact email</div>
+              <div class="radio-opt"><div class="dot"></div> No — Admin will share certificates manually</div>
+            </div>
+          </div>
+        </div>
+        <div style="background:var(--blue-lt);border:1px solid #c0d0f0;border-radius:5px;padding:10px 14px;font-size:11px;color:var(--blue);line-height:1.5;margin-top:4px">
+          <strong>If Yes:</strong> A Customer Portal account will be created for <strong>quality@abcmfg.lk</strong>. A temporary password will be emailed to the contact automatically. They will be prompted to change it on first login.
+        </div>
+        <div class="annot-box" style="margin-top:10px">Portal account can also be created later from the Client record page.</div>
+      </div>
+
+      <!-- Actions -->
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:4px">
+        <button class="btn btn-secondary">Cancel</button>
+        <button class="btn btn-primary">Save Client Profile</button>
+      </div>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <div style="flex:0 0 220px">
+      <div class="sidebar-wf">
+        <h4>Completion Checklist</h4>
+        <div style="font-size:11px;line-height:2.1">
+          ✅ Company Name<br>
+          ✅ Address<br>
+          ✅ Contact Name<br>
+          ✅ Contact Email<br>
+          ✅ Contact Phone<br>
+          ☐ Tax / VAT Number<br>
+          ☐ Secondary Contact<br>
+          ☐ Internal Notes
+        </div>
+        <div style="border-top:1px solid var(--wire);margin-top:12px;padding-top:12px">
+          <h4>After Saving</h4>
+          <div style="font-size:11px;color:var(--dim);line-height:1.6;margin-top:6px">Client ID is auto-assigned. You can create a Job for this client immediately after saving.</div>
+        </div>
+        <div style="margin-top:12px">
+          <div class="status-pill s-amber" style="width:100%;justify-content:center"><span class="s-dot"></span>Unsaved Draft</div>
+        </div>
+      </div>
+
+      <div class="sidebar-wf" style="margin-top:12px">
+        <h4>Field Rules</h4>
+        <div style="font-size:11px;color:var(--dim);line-height:1.7">
+          <span style="color:var(--ink);font-weight:600">Company Name</span> — max 200 chars<br>
+          <span style="color:var(--ink);font-weight:600">Email</span> — must be unique across all clients<br>
+          <span style="color:var(--ink);font-weight:600">Phone</span> — digits, +, -, spaces only<br>
+          <span style="color:var(--ink);font-weight:600">Address</span> — max 500 chars
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`},
+
+// ── 13: ADD INSTRUMENT ────────────────────────────────────────────────────
+{title:"Screen 14 — Add Instrument to Job",role:"Admin Manager",story:"US-JOB-02",html:`
+<div class="wf-topbar">
+  <span class="logo-wf">MCS LIMS</span>
+  <div class="nav-links">
+    <span class="active-nav">Jobs</span><span>Clients</span><span>Standards</span>
+  </div>
+  <div class="user-area">
+    <div class="user-pill">Admin Manager</div>
+  </div>
+</div>
+<div class="wf-body">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px">
+    <span style="font-size:13px;color:var(--blue);cursor:pointer;text-decoration:underline dotted">Jobs</span>
+    <span style="color:var(--dim)">›</span>
+    <span style="font-size:13px;color:var(--blue);cursor:pointer;text-decoration:underline dotted">Job #1178</span>
+    <span style="color:var(--dim)">›</span>
+    <span style="font-size:13px;font-weight:600;color:var(--ink)">Add Instrument</span>
+  </div>
+
+  <div class="wf-row">
+    <!-- MAIN FORM -->
+    <div style="flex:2">
+
+      <!-- Identity -->
+      <div class="wf-card">
+        <div class="wf-card-header">🔬 Instrument Identity</div>
+        <div class="field-row">
+          <div class="field" style="flex:2">
+            <label>Instrument Description <span style="color:red">*</span></label>
+            <div class="input-wf filled">Analog Bimetallic Thermometer</div>
+          </div>
+          <div class="field">
+            <label>Instrument Type</label>
+            <div class="input-wf select-wf filled">Thermometer</div>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Manufacturer</label>
+            <div class="input-wf filled">Wika</div>
+          </div>
+          <div class="field">
+            <label>Model / Part Number</label>
+            <div class="input-wf filled">Model A52</div>
+          </div>
+          <div class="field">
+            <label>Serial Number</label>
+            <div class="input-wf filled">SN-19284756</div>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Client's Instrument ID / Tag Number <span style="color:red">*</span></label>
+            <div class="input-wf filled" style="font-family:monospace">UA/TG-05</div>
+          </div>
+          <div class="field">
+            <label>Location / Installation Point</label>
+            <div class="input-wf filled">Boiler No. 3 — Flue Stack</div>
+          </div>
+        </div>
+        <div class="annot-box">The Instrument ID / Tag is the client's internal reference. It appears on the certificate and is searchable in the Customer Portal.</div>
+      </div>
+
+      <!-- Calibration Parameters -->
+      <div class="wf-card">
+        <div class="wf-card-header">⚙️ Calibration Parameters</div>
+        <div class="field-row">
+          <div class="field">
+            <label>Working / Calibration Range <span style="color:red">*</span></label>
+            <div class="input-wf filled">50–300 °C</div>
+          </div>
+          <div class="field">
+            <label>Scale Type <span style="color:red">*</span></label>
+            <div style="display:flex;border:1.5px solid var(--wire);border-radius:5px;overflow:hidden;margin-top:3px">
+              <div style="flex:1;padding:7px 0;text-align:center;background:var(--blue);color:#fff;font-size:12px;font-weight:600;cursor:pointer">⊙ Analog</div>
+              <div style="flex:1;padding:7px 0;text-align:center;background:#f8f8fc;color:var(--dim);font-size:12px;cursor:pointer">Digital</div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Temperature Unit <span style="color:red">*</span></label>
+            <div style="display:flex;border:1.5px solid var(--wire);border-radius:5px;overflow:hidden;margin-top:3px">
+              <div style="flex:1;padding:7px 0;text-align:center;background:var(--blue);color:#fff;font-size:12px;font-weight:600;cursor:pointer">⊙ °C</div>
+              <div style="flex:1;padding:7px 0;text-align:center;background:#f8f8fc;color:var(--dim);font-size:12px;cursor:pointer">°F</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analog-specific fields (shown when Scale Type = Analog) -->
+        <div style="background:#f4f4f8;border:1.5px solid #d8d8ec;border-radius:5px;padding:12px;margin-top:4px">
+          <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Analog-Specific Fields (hidden when Digital selected)</div>
+          <div class="field-row">
+            <div class="field">
+              <label>Scale Interval (smallest division)</label>
+              <div class="input-wf filled">10 °C</div>
+            </div>
+            <div class="field">
+              <label>Eye Estimation Fraction</label>
+              <div class="input-wf select-wf filled">1/5 of division</div>
+            </div>
+            <div class="field">
+              <label>Effective Resolution (auto-calculated)</label>
+              <div class="input-wf" style="background:#f0f0f8;color:var(--blue);font-weight:600">2 °C (= 10 × 1/5)</div>
+            </div>
+          </div>
+          <div class="annot-box" style="margin:0;background:none;border:none;padding:4px 0 0">Resolution is auto-calculated from Scale Interval × Eye Estimation Fraction. It is used in the UUC resolution uncertainty component.</div>
+        </div>
+      </div>
+
+      <!-- Job Assignment -->
+      <div class="wf-card">
+        <div class="wf-card-header">📋 Job Assignment & Output</div>
+        <div class="field-row">
+          <div class="field">
+            <label>Recalibration Frequency <span style="color:red">*</span></label>
+            <div class="input-wf select-wf filled">1 Year</div>
+          </div>
+          <div class="field">
+            <label>Expected Output Type <span style="color:red">*</span></label>
+            <div class="input-wf select-wf filled">Certificate</div>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Condition on Receipt <span style="color:red">*</span></label>
+            <div class="input-wf select-wf filled">GOOD</div>
+          </div>
+          <div class="field">
+            <label>Date Received</label>
+            <div class="input-wf filled" style="color:var(--dim)">2026-03-01 (from Job Card — read only)</div>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Special Instructions / Notes</label>
+            <div class="input-wf textarea-wf">Client requests calibration at 50, 150, 300 °C only.</div>
+          </div>
+        </div>
+        <div class="annot-box">Output type can be changed to Technical Report during calibration if the instrument is found to be faulty or out of calibration range.</div>
+      </div>
+
+      <!-- Actions -->
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:4px">
+        <button class="btn btn-secondary">Cancel</button>
+        <button class="btn btn-primary">Add Instrument to Job →</button>
+      </div>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <div style="flex:0 0 220px">
+      <div class="sidebar-wf">
+        <h4>Certificate Preview</h4>
+        <div style="font-size:10px;color:var(--dim);margin-bottom:8px">Auto-assigned on save:</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;color:var(--blue);background:var(--blue-lt);border-radius:4px;padding:8px 10px;text-align:center;border:1px solid #c0d0f0">MCS-2026-1178-005</div>
+        <div style="font-size:10px;color:var(--dim);margin-top:6px;text-align:center">Cert #005 — next in sequence for Job #1178</div>
+      </div>
+
+      <div class="sidebar-wf" style="margin-top:12px">
+        <h4>Job Summary</h4>
+        <div style="font-size:11px;color:var(--dim);line-height:1.8">
+          <span style="color:var(--ink);font-weight:600">Client:</span> ABC Manufacturing<br>
+          <span style="color:var(--ink);font-weight:600">Job #:</span> 1178<br>
+          <span style="color:var(--ink);font-weight:600">PO Ref:</span> PO-2026-0341<br>
+          <span style="color:var(--ink);font-weight:600">Items so far:</span> 4<br>
+          <span style="color:var(--ink);font-weight:600">Status:</span> Pending Approval
+        </div>
+      </div>
+
+      <div class="sidebar-wf" style="margin-top:12px">
+        <h4>Field Rules</h4>
+        <div style="font-size:11px;color:var(--dim);line-height:1.7">
+          <span style="color:var(--ink);font-weight:600">Description</span> — max 200 chars<br>
+          <span style="color:var(--ink);font-weight:600">Range</span> — free text, e.g. 50–300 °C<br>
+          <span style="color:var(--ink);font-weight:600">Instrument ID</span> — max 50 chars<br>
+          <span style="color:var(--ink);font-weight:600">Cert No.</span> — auto-assigned, cannot be edited<br>
+          <span style="color:var(--ink);font-weight:600">Scale + Estimation</span> — required if Analog
+        </div>
+      </div>
+
+      <div class="sidebar-wf" style="margin-top:12px">
+        <h4>Output Type Guide</h4>
+        <div style="font-size:11px;color:var(--dim);line-height:1.7">
+          <span style="color:var(--green);font-weight:600">Certificate</span> — full calibration results, uncertainty, and e-signature<br><br>
+          <span style="color:var(--amber);font-weight:600">Technical Report</span> — for instruments that cannot be calibrated (faulty, out of range)
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`},
+
+
+];
+
+const meta=[
+  {role:"All Users",tag:"blue",story:"US-AUTH-01"},
+  {role:"Admin Manager / Lab Manager / Director",tag:"amber",story:"US-JOB-05"},
+  {role:"Admin Manager",tag:"amber",story:"US-JOB-02"},
+  {role:"All Internal Roles",tag:"",story:"US-JOB-04 / US-JOB-05"},
+  {role:"Metrologist",tag:"blue",story:"US-CAL-01"},
+  {role:"Metrologist",tag:"blue",story:"US-CAL-02 / US-CAL-03 / US-CAL-04"},
+  {role:"Metrologist",tag:"blue",story:"US-CAL-05"},
+  {role:"Metrologist",tag:"blue",story:"US-CALC-01–04"},
+  {role:"Metrologist",tag:"blue",story:"US-CERT-01 / US-APPR-01"},
+  {role:"Lab Manager",tag:"amber",story:"US-APPR-02"},
+  {role:"Lab Manager",tag:"amber",story:"US-STD-01 / US-STD-02"},
+  {role:"Customer",tag:"green",story:"US-ADM-02"},
+  {role:"Admin Manager",tag:"amber",story:"US-JOB-01"},
+  {role:"Admin Manager",tag:"amber",story:"US-JOB-02"},
+
+];
+
+function show(i){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('nav-'+i).classList.add('active');
+  document.getElementById('screen-title').textContent=screens[i].title;
+  document.getElementById('screen-content').innerHTML=screens[i].html;
+  const m=meta[i];
+  const rt=document.getElementById('role-tag');
+  rt.textContent=m.role;
+  rt.className='meta-tag '+(m.tag||'');
+  document.getElementById('story-tag').textContent=m.story;
+  document.getElementById('canvas').scrollTop=0;
+}
+// goTo(0) called by prototype layer
+
+
+// ═══════════════════════════ INTERACTIVE PROTOTYPE ═══════════════════════════
+
+const JOURNEYS = [
+  {label:'Admin / Jobs',  color:'#7b5200', steps:[{i:0,s:'Login'},{i:1,s:'Jobs'},{i:2,s:'New Job'},{i:3,s:'Job Detail'}]},
+  {label:'Client Setup',  color:'#2355a0', steps:[{i:1,s:'Dashboard'},{i:12,s:'New Client'},{i:2,s:'Create Job'}]},
+  {label:'Add Instrument',color:'#1a5f6f', steps:[{i:2,s:'New Job'},{i:13,s:'Add Instrument'},{i:2,s:'Back to Job'}]},
+  {label:'Metrologist',   color:'#1a5f6f', steps:[{i:4,s:'Dashboard'},{i:5,s:'Setup'},{i:6,s:'Data Entry'},{i:7,s:'Results'},{i:8,s:'Certificate'}]},
+  {label:'Lab Manager',   color:'#2355a0', steps:[{i:9,s:'Auth Queue'},{i:8,s:'Cert Preview'},{i:3,s:'Job Detail'}]},
+  {label:'Customer',      color:'#1a6644', steps:[{i:0,s:'Login'},{i:11,s:'Portal'}]},
+];
+
+const WIRE = {
+  0:[
+    {btn:'Sign In', to:1, tip:'→ Jobs Dashboard (Admin)'},
+  ],
+  1:[
+    {btn:'+ New Job',   to:2,  tip:'→ Create New Job'},
+    {btn:'View →',      to:3,  tip:'→ Job Detail'},
+    {btn:'+ New Client',to:12, tip:'→ Create New Client'},
+    {rows:true,         to:3,  tip:'→ Job Detail — click any row'},
+  ],
+  2:[
+    {crumb:'Jobs',                    to:1,  tip:'→ Jobs Dashboard'},
+    {btn:'Cancel',                    to:1,  tip:'→ Jobs Dashboard'},
+    {btn:'+ Add Instrument',          to:13, tip:'→ Add Instrument Form'},
+    {btn:'Save & Generate Job Card',  to:3,  tip:'→ Job Detail'},
+  ],
+  3:[
+    {btn:'View',          to:4,  tip:'→ Metrologist Dashboard'},
+    {btn:'Authorise →',   to:9,  tip:'→ Authorisation Queue'},
+    {btn:'Review →',      to:4,  tip:'→ Metrologist Dashboard'},
+    {btn:'Assign',        to:4,  tip:'→ Metrologist Dashboard'},
+    {btn:'+ Add Instrument', to:13, tip:'→ Add Instrument Form'},
+  ],
+  4:[
+    {btn:'Continue →',         to:5, tip:'→ Worksheet Setup (Step 1)'},
+    {btn:'Review Rejection',   to:5, tip:'→ Worksheet Setup'},
+    {btn:'Start Calibration',  to:5, tip:'→ Worksheet Setup'},
+    {btn:'Assign to Me',       to:5, tip:'→ Worksheet Setup'},
+  ],
+  5:[
+    {crumb:'Jobs',                   to:1, tip:'→ Jobs Dashboard'},
+    {crumb:'#1178',                  to:3, tip:'→ Job Detail'},
+    {btn:'Continue to Data Entry →', to:6, tip:'→ Data Entry (Step 2)'},
+    {btn:'← Back',                   to:4, tip:'→ Metrologist Dashboard'},
+  ],
+  6:[
+    {btn:'Calculate & View Results →', to:7, tip:'→ Analysis Results (Step 3)'},
+    {btn:'← Back to Setup',           to:5, tip:'→ Worksheet Setup'},
+    {btn:'Save Draft',                 to:6, tip:'↩ Saves (same screen)'},
+  ],
+  7:[
+    {btn:'Preview Certificate →', to:8, tip:'→ Certificate Preview'},
+    {btn:'← Edit Data',           to:6, tip:'→ Data Entry'},
+  ],
+  8:[
+    {btn:'Sign and Submit', to:9, tip:'→ Authorisation Queue'},
+    {btn:'← Edit Data',     to:7, tip:'→ Analysis Results'},
+  ],
+  9:[
+    {btn:'View Certificate', to:8,  tip:'→ Certificate Preview'},
+    {btn:'Authorise',        to:3,  tip:'→ Job Detail (Authorised)'},
+    {btn:'Reject',           to:4,  tip:'→ Metrologist notified'},
+    {btn:'Send Rejection',   to:4,  tip:'→ Metrologist Dashboard'},
+  ],
+  10:[
+    {btn:'View Detail',     to:10, tip:'↩ Detail panel'},
+    {btn:'Record New Cal.', to:10, tip:'↩ Coefficient entry form'},
+  ],
+  11:[],
+  12:[
+    {crumb:'Jobs',                to:1, tip:'→ Jobs Dashboard'},
+    {crumb:'Clients',             to:1, tip:'→ Clients List'},
+    {btn:'Cancel',                to:2, tip:'→ Create New Job'},
+    {btn:'Save Client Profile',   to:2, tip:'→ Create Job (client pre-selected)'},
+  ],
+  13:[
+    {crumb:'Jobs',                        to:1, tip:'→ Jobs Dashboard'},
+    {crumb:'#1178',                       to:2, tip:'→ Create New Job'},
+    {btn:'Cancel',                        to:2, tip:'→ Back to Create Job'},
+    {btn:'Add Instrument to Job →',       to:2, tip:'→ Create Job (instrument added)'},
+  ],
+};
+
+let navHist = [0], navPos = 0;
+
+function navToast(msg){
+  const t=document.getElementById('nav-toast');
+  t.innerHTML=`<div class="nt">🔗 ${msg}</div>`;
+  clearTimeout(t._t);
+  t._t=setTimeout(()=>t.innerHTML='',2200);
+}
+
+function hotspot(el, to, tip){
+  el.classList.add('wf-hotspot');
+  el.setAttribute('data-nav-label', tip);
+  el._wfTo=to;
+  if(!el._wfBound){
+    el._wfBound=true;
+    el.addEventListener('click',function(e){
+      e.stopPropagation();
+      goTo(this._wfTo);
+    });
+  }
+}
+
+function wireScreen(idx){
+  const root=document.getElementById('screen-content');
+  if(!root)return;
+  const links=WIRE[idx]||[];
+  links.forEach(lk=>{
+    if(lk.rows){
+      root.querySelectorAll('.wf-table tbody tr').forEach(tr=>hotspot(tr,lk.to,lk.tip));
+    } else if(lk.crumb){
+      root.querySelectorAll('span,div,a').forEach(el=>{
+        if(el.children.length===0 && el.textContent.trim()===lk.crumb){
+          hotspot(el,lk.to,lk.tip);
+          el.style.color='var(--blue)';
+          el.style.textDecoration='underline dotted';
+          el.style.cursor='pointer';
+        }
+      });
+    } else if(lk.btn){
+      root.querySelectorAll('.btn,button').forEach(btn=>{
+        const t=btn.textContent.replace(/[←→✍⬇✕✓]/g,'').trim();
+        if(lk.btn.replace(/[←→✍⬇✕✓]/g,'').trim().toLowerCase().includes(t.toLowerCase()) ||
+           t.toLowerCase().includes(lk.btn.replace(/[←→✍⬇✕✓]/g,'').trim().toLowerCase())){
+          hotspot(btn,lk.to,lk.tip);
+        }
+      });
+    }
+  });
+}
+
+function buildFlowBar(cur){
+  const bar=document.getElementById('flow-bar');
+  if(!bar)return;
+  let h='';
+  JOURNEYS.forEach(j=>{
+    h+=`<div class="fj"><span class="fj-label" style="background:${j.color}">${j.label}</span>`;
+    j.steps.forEach((s,si)=>{
+      const isCur=s.i===cur;
+      h+=`<span class="fs ${isCur?'cur':''}" style="${isCur?'background:'+j.color:''}"
+           onclick="goTo(${s.i})" title="${screens[s.i]?.title||''}">${s.s}</span>`;
+      if(si<j.steps.length-1) h+='<span class="fa">›</span>';
+    });
+    h+='</div>';
+  });
+  bar.innerHTML=h;
+}
+
+function updateUI(cur){
+  buildFlowBar(cur);
+  const bk=document.getElementById('nav-back');
+  const fw=document.getElementById('nav-fwd');
+  const ph=document.getElementById('pb-hist');
+  if(bk)bk.disabled=navPos<=0;
+  if(fw)fw.disabled=navPos>=navHist.length-1;
+  if(ph)ph.textContent='Screen '+(cur+1)+' / '+screens.length;
+}
+
+function goTo(i){
+  navHist=navHist.slice(0,navPos+1);
+  navHist.push(i);
+  navPos=navHist.length-1;
+  show(i);
+  wireScreen(i);
+  updateUI(i);
+  const title=screens[i]?.title||'Screen '+(i+1);
+  navToast(title);
+}
+
+function navBack(){
+  if(navPos>0){navPos--;const i=navHist[navPos];show(i);wireScreen(i);updateUI(i);}
+}
+function navFwd(){
+  if(navPos<navHist.length-1){navPos++;const i=navHist[navPos];show(i);wireScreen(i);updateUI(i);}
+}
+
+let _hs=false;
+function toggleHotspots(){
+  _hs=!_hs;
+  document.body.classList.toggle('show-hotspots',_hs);
+  const btn=document.getElementById('hs-btn');
+  if(btn){btn.classList.toggle('on',_hs);btn.textContent=_hs?'● Hotspots ON':'○ Show Hotspots';}
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+  if(e.key==='ArrowLeft')navBack();
+  if(e.key==='ArrowRight')navFwd();
+  if(e.key.toLowerCase()==='h')toggleHotspots();
+});
+
+setTimeout(()=>{goTo(0);},0);
+
+</script>
+
+<div id="proto-bar">
+  <span class="pb-label">Prototype</span>
+  <div class="pb-btn" style="background:rgba(100,150,255,.12);color:#88aaff;border-color:#3a4a88;cursor:default;font-size:9px">v1.1 · 14 Screens</div>
+  <div class="pb-sep"></div>
+  <button class="pb-nav" id="nav-back" onclick="navBack()" disabled title="Back  ←">‹</button>
+  <button class="pb-nav" id="nav-fwd"  onclick="navFwd()"  disabled title="Forward →">›</button>
+  <span class="pb-hist" id="pb-hist">Screen 1 / 14</span>
+  <div class="pb-sep"></div>
+  <button class="pb-btn" id="hs-btn" onclick="toggleHotspots()">○ Show Hotspots</button>
+  <span class="pb-label" style="margin-left:4px">Click blue-outlined elements to navigate</span>
+  <div class="pb-hint"><span class="pbk">←</span><span class="pbk">→</span> history &nbsp;<span class="pbk">H</span> hotspots</div>
+</div>
+<div id="nav-toast"></div>
+</body>
+</html>
